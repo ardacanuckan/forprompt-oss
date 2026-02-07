@@ -53,7 +53,6 @@ interface OpenRouterAPIResponse {
   };
 }
 
-
 // ============================================================================
 // Constants
 // ============================================================================
@@ -100,7 +99,9 @@ function getOpenRouterApiKey(): string {
 /**
  * Make a request to OpenRouter API
  */
-async function makeRequest(options: AIRequestOptions): Promise<OpenRouterAPIResponse> {
+async function makeRequest(
+  options: AIRequestOptions,
+): Promise<OpenRouterAPIResponse> {
   const apiKey = getOpenRouterApiKey();
 
   const response = await fetch(OPENROUTER_API_URL, {
@@ -144,7 +145,7 @@ export async function chat(options: AIRequestOptions): Promise<string> {
  * @returns Object with content and token count
  */
 export async function chatWithUsage(
-  options: AIRequestOptions
+  options: AIRequestOptions,
 ): Promise<AIResponseWithUsage> {
   const data = await makeRequest(options);
   return {
@@ -158,7 +159,7 @@ export async function chatWithUsage(
  * @returns Object with content, thinking process, and token count
  */
 export async function chatWithThinking(
-  options: ThinkingRequestOptions
+  options: ThinkingRequestOptions,
 ): Promise<AIResponseWithThinking> {
   const apiKey = getOpenRouterApiKey();
   const maxTokens = options.maxTokens ?? 16000;
@@ -197,9 +198,6 @@ export async function chatWithThinking(
   }
 
   const data = await response.json();
-
-  // Debug: log the response structure
-  console.log("OpenRouter response:", JSON.stringify(data, null, 2));
 
   // Extract reasoning and content from response
   // OpenRouter may return reasoning in different fields depending on the model

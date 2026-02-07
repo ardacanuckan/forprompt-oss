@@ -5,6 +5,7 @@
 
 import { httpAction } from "../../_generated/server";
 import { getEditTaskPrompt } from "../../domains/promptOrchestrator/models/instructions/tasks/edit.task";
+import { createPreflightResponse, getCorsHeaders } from "../../lib/cors";
 import {
   checkHttpRateLimit,
   createRateLimitResponse,
@@ -24,26 +25,30 @@ const THINKING_MODELS = ["anthropic/claude-sonnet-4.5"];
  * Rate Limit: 30 requests per minute (ai_operation)
  */
 export const editPromptStream = httpAction(async (ctx, request) => {
-  // Handle CORS preflight
   if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+    return createPreflightResponse(request, {
+      methods: ["POST", "OPTIONS"],
+      headers: ["Content-Type"],
     });
   }
 
-  // Check rate limit for AI operations (uses IP-based identification)
+  const corsHeaders = getCorsHeaders(request, {
+    methods: ["POST", "OPTIONS"],
+    headers: ["Content-Type"],
+  });
+
   const rateLimitId = extractRateLimitIdentifier(request);
-  const rateLimitResult = await checkHttpRateLimit(ctx, "ai_operation", rateLimitId);
+  const rateLimitResult = await checkHttpRateLimit(
+    ctx,
+    "ai_operation",
+    rateLimitId,
+  );
   if (!rateLimitResult.allowed) {
     const response = createRateLimitResponse(rateLimitResult);
-    // Add CORS headers
     const headers = new Headers(response.headers);
-    headers.set("Access-Control-Allow-Origin", "*");
+    Object.entries(corsHeaders).forEach(([key, value]) =>
+      headers.set(key, value),
+    );
     return new Response(response.body, {
       status: response.status,
       headers,
@@ -51,7 +56,13 @@ export const editPromptStream = httpAction(async (ctx, request) => {
   }
 
   try {
-    const { currentPrompt, instruction, selection, conversationHistory, model } = await request.json();
+    const {
+      currentPrompt,
+      instruction,
+      selection,
+      conversationHistory,
+      model,
+    } = await request.json();
 
     // Use provided model or default to thinking model
     const selectedModel = model || DEFAULT_THINKING_MODEL;
@@ -65,11 +76,13 @@ export const editPromptStream = httpAction(async (ctx, request) => {
           status: 500,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "X-RateLimit-Limit": String(rateLimitResult.headers["X-RateLimit-Limit"] || 30),
+            ...corsHeaders,
+            "X-RateLimit-Limit": String(
+              rateLimitResult.headers["X-RateLimit-Limit"] || 30,
+            ),
             "X-RateLimit-Remaining": String(rateLimitResult.remaining),
           },
-        }
+        },
       );
     }
 
@@ -134,10 +147,10 @@ export const editPromptStream = httpAction(async (ctx, request) => {
           status: response.status,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            ...corsHeaders,
             ...rateLimitResult.headers,
           },
-        }
+        },
       );
     }
 
@@ -186,8 +199,8 @@ export const editPromptStream = httpAction(async (ctx, request) => {
                           hasReasoning = true;
                           controller.enqueue(
                             encoder.encode(
-                              `data: ${JSON.stringify({ type: "thinking", content: detail.text })}\n\n`
-                            )
+                              `data: ${JSON.stringify({ type: "thinking", content: detail.text })}\n\n`,
+                            ),
                           );
                         }
                       }
@@ -197,8 +210,8 @@ export const editPromptStream = httpAction(async (ctx, request) => {
                     if (!hasReasoning && delta.reasoning) {
                       controller.enqueue(
                         encoder.encode(
-                          `data: ${JSON.stringify({ type: "thinking", content: delta.reasoning })}\n\n`
-                        )
+                          `data: ${JSON.stringify({ type: "thinking", content: delta.reasoning })}\n\n`,
+                        ),
                       );
                     }
 
@@ -206,8 +219,8 @@ export const editPromptStream = httpAction(async (ctx, request) => {
                     if (delta.content) {
                       controller.enqueue(
                         encoder.encode(
-                          `data: ${JSON.stringify({ type: "content", content: delta.content })}\n\n`
-                        )
+                          `data: ${JSON.stringify({ type: "content", content: delta.content })}\n\n`,
+                        ),
                       );
                     }
                   }
@@ -228,7 +241,7 @@ export const editPromptStream = httpAction(async (ctx, request) => {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
-        "Access-Control-Allow-Origin": "*",
+        ...corsHeaders,
         ...rateLimitResult.headers,
       },
     });
@@ -239,10 +252,10 @@ export const editPromptStream = httpAction(async (ctx, request) => {
         status: 500,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          ...corsHeaders,
           ...rateLimitResult.headers,
         },
-      }
+      },
     );
   }
 });

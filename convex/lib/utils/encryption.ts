@@ -12,18 +12,19 @@
  */
 
 // Base64 character set
-const BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const BASE64_CHARS =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 // Encryption constants
-const ALGORITHM = 'AES-GCM';
+const ALGORITHM = "AES-GCM";
 const KEY_LENGTH = 256;
 const IV_LENGTH = 12; // 96 bits for GCM
 const TAG_LENGTH = 128; // bits
-const SALT = 'forprompt-encryption-salt-v1';
+const SALT = "forprompt-encryption-salt-v1";
 const PBKDF2_ITERATIONS = 100000;
 
 // Version prefix for encrypted data (allows future algorithm changes)
-const ENCRYPTION_VERSION = 'v1:';
+const ENCRYPTION_VERSION = "v1:";
 
 /**
  * Encode a string to base64 (Convex-compatible)
@@ -46,7 +47,7 @@ function base64Encode(str: string): string {
   }
 
   // Convert bytes to base64
-  let result = '';
+  let result = "";
   for (let i = 0; i < bytes.length; i += 3) {
     const b1 = bytes[i];
     const b2 = bytes[i + 1];
@@ -54,8 +55,9 @@ function base64Encode(str: string): string {
 
     result += BASE64_CHARS[b1 >> 2];
     result += BASE64_CHARS[((b1 & 3) << 4) | (b2 >> 4)];
-    result += b2 !== undefined ? BASE64_CHARS[((b2 & 15) << 2) | (b3 >> 6)] : '=';
-    result += b3 !== undefined ? BASE64_CHARS[b3 & 63] : '=';
+    result +=
+      b2 !== undefined ? BASE64_CHARS[((b2 & 15) << 2) | (b3 >> 6)] : "=";
+    result += b3 !== undefined ? BASE64_CHARS[b3 & 63] : "=";
   }
 
   return result;
@@ -66,7 +68,7 @@ function base64Encode(str: string): string {
  */
 function base64Decode(encoded: string): string {
   // Remove padding
-  const str = encoded.replace(/=+$/, '');
+  const str = encoded.replace(/=+$/, "");
 
   // Convert base64 to bytes
   const bytes: number[] = [];
@@ -82,7 +84,7 @@ function base64Decode(encoded: string): string {
   }
 
   // Convert bytes to UTF-8 string
-  let result = '';
+  let result = "";
   for (let i = 0; i < bytes.length; i++) {
     const byte = bytes[i];
     if (byte < 128) {
@@ -91,7 +93,7 @@ function base64Decode(encoded: string): string {
       result += String.fromCharCode(((byte & 31) << 6) | (bytes[++i] & 63));
     } else {
       result += String.fromCharCode(
-        ((byte & 15) << 12) | ((bytes[++i] & 63) << 6) | (bytes[++i] & 63)
+        ((byte & 15) << 12) | ((bytes[++i] & 63) << 6) | (bytes[++i] & 63),
       );
     }
   }
@@ -103,7 +105,7 @@ function base64Decode(encoded: string): string {
  * Encode Uint8Array to base64 string
  */
 function uint8ArrayToBase64(bytes: Uint8Array): string {
-  let result = '';
+  let result = "";
   for (let i = 0; i < bytes.length; i += 3) {
     const b1 = bytes[i];
     const b2 = bytes[i + 1];
@@ -111,8 +113,11 @@ function uint8ArrayToBase64(bytes: Uint8Array): string {
 
     result += BASE64_CHARS[b1 >> 2];
     result += BASE64_CHARS[((b1 & 3) << 4) | ((b2 ?? 0) >> 4)];
-    result += b2 !== undefined ? BASE64_CHARS[((b2 & 15) << 2) | ((b3 ?? 0) >> 6)] : '=';
-    result += b3 !== undefined ? BASE64_CHARS[b3 & 63] : '=';
+    result +=
+      b2 !== undefined
+        ? BASE64_CHARS[((b2 & 15) << 2) | ((b3 ?? 0) >> 6)]
+        : "=";
+    result += b3 !== undefined ? BASE64_CHARS[b3 & 63] : "=";
   }
   return result;
 }
@@ -121,7 +126,7 @@ function uint8ArrayToBase64(bytes: Uint8Array): string {
  * Decode base64 string to Uint8Array
  */
 function base64ToUint8Array(encoded: string): Uint8Array {
-  const str = encoded.replace(/=+$/, '');
+  const str = encoded.replace(/=+$/, "");
   const bytes: number[] = [];
 
   for (let i = 0; i < str.length; i += 4) {
@@ -146,13 +151,13 @@ function getEncryptionSecret(): string {
   const secret = process.env.CONVEX_ENCRYPTION_KEY;
   if (!secret) {
     throw new Error(
-      'CONVEX_ENCRYPTION_KEY environment variable is required for encryption. ' +
-      'Set it in your Convex dashboard under Settings > Environment Variables.'
+      "CONVEX_ENCRYPTION_KEY environment variable is required for encryption. " +
+        "Set it in your Convex dashboard under Settings > Environment Variables.",
     );
   }
   if (secret.length < 32) {
     throw new Error(
-      'CONVEX_ENCRYPTION_KEY must be at least 32 characters long for security.'
+      "CONVEX_ENCRYPTION_KEY must be at least 32 characters long for security.",
     );
   }
   return secret;
@@ -166,25 +171,25 @@ async function deriveKey(secret: string): Promise<CryptoKey> {
 
   // Import the secret as key material
   const keyMaterial = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     encoder.encode(secret),
-    'PBKDF2',
+    "PBKDF2",
     false,
-    ['deriveKey']
+    ["deriveKey"],
   );
 
   // Derive the actual encryption key
   return crypto.subtle.deriveKey(
     {
-      name: 'PBKDF2',
+      name: "PBKDF2",
       salt: encoder.encode(SALT),
       iterations: PBKDF2_ITERATIONS,
-      hash: 'SHA-256',
+      hash: "SHA-256",
     },
     keyMaterial,
     { name: ALGORITHM, length: KEY_LENGTH },
     false,
-    ['encrypt', 'decrypt']
+    ["encrypt", "decrypt"],
   );
 }
 
@@ -207,7 +212,7 @@ export async function encryptAsync(value: string): Promise<string> {
   const encrypted = await crypto.subtle.encrypt(
     { name: ALGORITHM, iv, tagLength: TAG_LENGTH },
     key,
-    encoder.encode(value)
+    encoder.encode(value),
   );
 
   // Combine IV + ciphertext (tag is appended by GCM)
@@ -227,10 +232,7 @@ export async function encryptAsync(value: string): Promise<string> {
  * @returns Decrypted plaintext string
  */
 export async function decryptAsync(encrypted: string): Promise<string> {
-  // Check if this is new format (v1:) or legacy base64
   if (!encrypted.startsWith(ENCRYPTION_VERSION)) {
-    // Legacy format - use base64 decode
-    console.warn('SECURITY WARNING: Decrypting legacy base64-encoded value. Run migration to upgrade.');
     return base64Decode(encrypted);
   }
 
@@ -249,7 +251,7 @@ export async function decryptAsync(encrypted: string): Promise<string> {
   const decrypted = await crypto.subtle.decrypt(
     { name: ALGORITHM, iv, tagLength: TAG_LENGTH },
     key,
-    ciphertext
+    ciphertext,
   );
 
   return new TextDecoder().decode(decrypted);
@@ -265,9 +267,9 @@ export async function decryptAsync(encrypted: string): Promise<string> {
 export async function hashApiKey(apiKey: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(apiKey);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 /**
@@ -316,7 +318,6 @@ export function isNewEncryptionFormat(value: string): boolean {
  * Kept for backward compatibility during migration.
  */
 export function encrypt(value: string): string {
-  console.warn('DEPRECATED: encrypt() uses base64 only. Use encryptAsync() for real encryption.');
   return base64Encode(value);
 }
 
@@ -328,7 +329,7 @@ export function decrypt(encrypted: string): string {
   // If new format, we can't decrypt synchronously
   if (encrypted.startsWith(ENCRYPTION_VERSION)) {
     throw new Error(
-      'Cannot use sync decrypt() for AES-encrypted values. Use decryptAsync() instead.'
+      "Cannot use sync decrypt() for AES-encrypted values. Use decryptAsync() instead.",
     );
   }
   return base64Decode(encrypted);
@@ -354,7 +355,8 @@ export function maskApiKey(key: string): string {
  * Uses crypto.getRandomValues for cryptographic randomness
  */
 export function generateSecureApiKey(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const randomBytes = crypto.getRandomValues(new Uint8Array(32));
   const randomChars: string[] = [];
 
@@ -364,5 +366,5 @@ export function generateSecureApiKey(): string {
     randomChars.push(chars[randomIndex]);
   }
 
-  return `fp_proj_${randomChars.join('')}`;
+  return `fp_proj_${randomChars.join("")}`;
 }

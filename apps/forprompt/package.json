@@ -23,7 +23,6 @@
     "diff": "^8.0.2",
     "lucide-react": "^0.562.0",
     "next": "^16.0.9",
-    "ogl": "^1.0.11",
     "posthog-js": "^1.333.0",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
