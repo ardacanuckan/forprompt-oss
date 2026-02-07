@@ -8,6 +8,7 @@
 
 Version control, AI-powered analysis, production analytics, and instant deployment for your prompts.
 
+[![CI](https://github.com/ardacanuckan/forprompt-oss/actions/workflows/ci.yml/badge.svg)](https://github.com/ardacanuckan/forprompt-oss/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
