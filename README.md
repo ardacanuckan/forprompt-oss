@@ -4,9 +4,9 @@
 
 # ForPrompt
 
-### GitHub for AI Prompts
+### The Complete Platform for AI Prompt Engineering
 
-Version control, testing, and deployment for AI prompts — without changing your code.
+Version control, AI-powered analysis, production analytics, and instant deployment for your prompts.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
@@ -19,108 +19,158 @@ Version control, testing, and deployment for AI prompts — without changing you
 
 ---
 
-## Why ForPrompt?
+## What is ForPrompt?
 
-Prompts are the new code. But unlike code, they're often:
+ForPrompt is a **complete prompt engineering platform** that treats prompts as first-class citizens in your AI development workflow. It's not just version control — it's an entire ecosystem for building, testing, analyzing, and deploying AI prompts.
 
-- Hardcoded in your application
-- Scattered across files with no version history
-- Impossible to update without redeploying
-- Tested manually, one at a time
+### The Problem
 
-**ForPrompt fixes this.** Manage prompts like you manage code — with version control, testing, and instant deployment.
+Building AI applications today means:
 
----
+- Prompts hardcoded in your codebase, scattered across files
+- No way to update prompts without redeploying your app
+- Manual testing with no structured analysis
+- No visibility into how prompts perform in production
+- No collaboration tools for teams working on prompts
 
-## Features
+### The Solution
 
-| Feature             | Description                                               |
-| ------------------- | --------------------------------------------------------- |
-| **Version Control** | Full history for every prompt. Compare, rollback, branch. |
-| **Instant Updates** | Change prompts in production without code changes         |
-| **A/B Testing**     | Built-in evaluation tools to compare prompt versions      |
-| **SDK Integration** | TypeScript & Python SDKs with full type safety            |
-| **MCP Server**      | Works with Claude Code, Cursor, Windsurf, and more        |
-| **Real-time Sync**  | Changes propagate instantly across your team              |
-| **Multi-tenancy**   | Organizations with role-based access control              |
-| **Self-Hosted**     | Your data, your infrastructure, your control              |
+ForPrompt provides:
+
+- **Version Control** — Git-like versioning for every prompt
+- **AI-Powered Analysis** — Automatic clarity scoring, improvement suggestions, edge case detection
+- **Production Analytics** — Real-time usage tracking, token consumption, response times
+- **Instant Updates** — Change prompts in production without code changes
+- **Team Collaboration** — Organizations, roles, and real-time sync
 
 ---
 
-## Quick Start
+## Core Features
 
-### Prerequisites
+### 1. Smart Prompt Editor
 
-- Node.js 18+
-- pnpm 8+
-- [Convex](https://convex.dev) account (free tier available)
-- [Clerk](https://clerk.com) account (free tier available)
+A powerful editor with AI assistance built-in:
 
-### 1. Clone & Install
+- **Inline AI Review** — Claude-powered suggestions while you edit
+- **Extended Thinking** — See the AI's reasoning process in real-time
+- **Syntax Highlighting** — Clean, readable prompt editing
+- **Model Testing** — Test against multiple LLMs (GPT-4, Claude, etc.)
 
-```bash
-git clone https://github.com/ardacanuckan/forprompt-oss.git
-cd forprompt-oss
-pnpm install
+### 2. AI-Powered Prompt Analysis
+
+Get instant feedback on your prompts:
+
+| Analysis Type               | What It Does                                         |
+| --------------------------- | ---------------------------------------------------- |
+| **Clarity Score**           | 1-10 rating of how clear your prompt is              |
+| **Improvement Suggestions** | Specific recommendations to enhance your prompt      |
+| **Edge Case Detection**     | Identifies scenarios your prompt might not handle    |
+| **Alignment Check**         | Verifies prompt matches your stated purpose/behavior |
+| **Tool Usage Analysis**     | Checks if tools are properly integrated              |
+
+### 3. Structured Prompt Metadata
+
+Define prompts with structured information:
+
+```
+Purpose          → What the prompt is trying to achieve
+Expected Behavior → How the AI should act
+Input/Output Format → Data structure expectations
+Constraints       → Limitations and boundaries
+Use Cases         → Example scenarios
+Tool Strategy     → How to use integrated tools
 ```
 
-### 2. Configure Environment
+ForPrompt can **auto-generate system prompts** from this metadata and **extract metadata** from existing prompts.
 
-```bash
-cp .env.example .env
+### 4. Version Control
+
+Full Git-like versioning for prompts:
+
+- **Version History** — See every change with timestamps
+- **Version Comparison** — Diff between any two versions
+- **Instant Rollback** — Revert to any previous version
+- **Active Version Management** — Control which version is live
+- **Changelog** — Notes for each version
+
+### 5. Production Logging & Analytics
+
+Track everything in production:
+
+```typescript
+// SDK automatically logs conversations
+const logger = forprompt.createLogger("my-prompt");
+await logger.startTrace({ userId: "user123" });
+await logger.log({ role: "user", content: message });
+await logger.log({ role: "assistant", content: response });
+await logger.endTrace();
 ```
 
-Edit `.env` with your credentials:
+**Analytics Dashboard:**
+
+- Token usage per prompt/version
+- Response time tracking
+- Conversation success rates
+- Version A/B comparison
+- User-level analytics
+
+### 6. Tool Management
+
+Build a library of reusable tools:
+
+- **Tool Library** — Organization-wide tool definitions
+- **Prompt-Tool Associations** — Link tools to specific prompts
+- **Parameter Schemas** — Structured tool parameters
+- **Usage Documentation** — Examples for each tool
+- **Export Formats** — Export tools in multiple formats
+
+### 7. Team Collaboration
+
+Built for teams:
+
+- **Organizations** — Isolated workspaces for teams
+- **Role-Based Access** — Admin/Member permissions
+- **Invitations** — Email-based team invites
+- **Real-time Sync** — Changes propagate instantly
+- **Audit Trail** — Track who changed what
+
+### 8. Webhook Integration
+
+Sync prompts to your infrastructure:
 
 ```bash
-# Clerk (https://dashboard.clerk.com)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-
-# Convex (auto-generated on first run)
-NEXT_PUBLIC_CONVEX_URL=https://your-project.convex.cloud
+# Register a webhook
+POST /api/webhooks
+{
+  "url": "https://your-app.com/webhook",
+  "events": ["prompt.updated", "prompt.version.activated"]
+}
 ```
 
-### 3. Start Backend
-
-```bash
-pnpm convex:dev
-```
-
-This will prompt you to create a Convex project and set up the database.
-
-### 4. Run Development Server
-
-```bash
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) — you're ready to go!
+Events: `prompt.created`, `prompt.updated`, `prompt.deleted`, `prompt.version.activated`
 
 ---
 
-## Using the SDK
+## SDKs & Integrations
 
-### Installation
+### TypeScript SDK
 
 ```bash
 npm install @forprompt/sdk
 ```
-
-### Fetch Prompts in Your App
 
 ```typescript
 import { createForPrompt } from "@forprompt/sdk";
 
 const forprompt = createForPrompt({
   apiKey: process.env.FORPROMPT_API_KEY!,
-  baseUrl: process.env.FORPROMPT_BASE_URL!, // Your Convex URL
+  baseUrl: process.env.FORPROMPT_BASE_URL!,
 });
 
-// Get a prompt by key
-const prompt = await forprompt.getPrompt("customer-support-agent");
+// Fetch a prompt
+const prompt = await forprompt.getPrompt("customer-support");
 
-// Use with your LLM
+// Use with any LLM
 const response = await openai.chat.completions.create({
   model: "gpt-4",
   messages: [
@@ -128,23 +178,39 @@ const response = await openai.chat.completions.create({
     { role: "user", content: userMessage },
   ],
 });
+
+// Log the conversation
+const logger = forprompt.createLogger("customer-support");
+await logger.logRequest({
+  input: userMessage,
+  output: response.choices[0].message.content,
+  tokens: { input: 100, output: 50 },
+});
 ```
 
-### Sync Prompts to Local Files
+### Python SDK
 
 ```bash
-npx @forprompt/sdk sync
+pip install forprompt
 ```
 
-This downloads all prompts to `.forprompt/` for version control with your code.
+```python
+from forprompt import ForPrompt
 
----
+client = ForPrompt(
+    api_key=os.environ["FORPROMPT_API_KEY"],
+    base_url=os.environ["FORPROMPT_BASE_URL"]
+)
 
-## MCP Integration
+prompt = client.get_prompt("customer-support")
+print(prompt.system_prompt)
+```
 
-ForPrompt works as an MCP server for AI coding assistants.
+### MCP Server (Model Context Protocol)
 
-### Claude Code
+ForPrompt works as an MCP server for AI coding assistants:
+
+**Claude Code:**
 
 ```bash
 claude mcp add forprompt \
@@ -153,9 +219,7 @@ claude mcp add forprompt \
   -- npx -y @forprompt/sdk mcp start
 ```
 
-### Cursor / Windsurf / Other
-
-Add to your MCP config:
+**Cursor / Windsurf / Continue.dev:**
 
 ```json
 {
@@ -172,40 +236,199 @@ Add to your MCP config:
 }
 ```
 
+**Available MCP Tools:**
+
+- `forprompt_get_prompt` — Fetch prompt by key
+- `forprompt_list_prompts` — List all prompts
+- `forprompt_search_prompts` — Search prompts
+- `forprompt_get_system_prompt` — Get raw system prompt
+
+### CLI
+
+```bash
+# Initialize project
+npx @forprompt/sdk init
+
+# Sync prompts to local files
+npx @forprompt/sdk sync
+
+# Start MCP server
+npx @forprompt/sdk mcp start
+```
+
 ---
 
-## Tech Stack
+## API Reference
+
+### REST API
+
+| Endpoint                  | Method | Description              |
+| ------------------------- | ------ | ------------------------ |
+| `/api/prompts`            | GET    | Fetch prompt by key      |
+| `/api/prompts`            | POST   | Create new prompt        |
+| `/api/prompts/:id`        | PUT    | Update prompt            |
+| `/api/sync`               | GET    | Sync all prompts         |
+| `/api/log`                | POST   | Log traces/spans         |
+| `/api/webhooks`           | POST   | Register webhook         |
+| `/api/edit-prompt/stream` | POST   | AI-powered editing (SSE) |
+
+### Streaming Edit API
+
+Real-time AI-powered prompt editing with extended thinking:
+
+```typescript
+const response = await fetch("/api/edit-prompt/stream", {
+  method: "POST",
+  body: JSON.stringify({
+    prompt: currentPrompt,
+    instruction: "Make it more concise",
+    conversationHistory: [...],
+  }),
+});
+
+// Stream the response
+const reader = response.body.getReader();
+// Receive: thinking chunks, content chunks, done signal
+```
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm 8+
+- [Convex](https://convex.dev) account (free tier)
+- [Clerk](https://clerk.com) account (free tier)
+- [OpenRouter](https://openrouter.ai) API key (optional, for AI features)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/ardacanuckan/forprompt-oss.git
+cd forprompt-oss
+
+# Install dependencies
+pnpm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+
+# Start Convex backend
+pnpm convex:dev
+
+# Start development server
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Architecture
+
+### Tech Stack
 
 | Layer        | Technology                                         |
 | ------------ | -------------------------------------------------- |
 | **Frontend** | Next.js 15, React 19, Tailwind CSS v4, shadcn/ui   |
 | **Backend**  | Convex (serverless functions + real-time database) |
-| **Auth**     | Clerk (users, organizations, RBAC)                 |
+| **Auth**     | Clerk (users, organizations, multi-tenancy)        |
+| **AI**       | OpenRouter API (Claude, GPT-4, etc.)               |
 | **SDKs**     | TypeScript, Python                                 |
 | **Monorepo** | Turborepo + pnpm workspaces                        |
 
----
-
-## Project Structure
+### Project Structure
 
 ```
 forprompt-oss/
 ├── apps/
-│   └── forprompt/          # Next.js web dashboard
+│   └── forprompt/              # Next.js web dashboard
+│       └── src/app/features/
+│           ├── editor/         # Prompt editor with AI review
+│           ├── testing/        # AI analysis & testing
+│           ├── versions/       # Version history
+│           ├── logs/           # Production analytics
+│           ├── tools/          # Tool management
+│           └── organization/   # Team settings
 ├── packages/
-│   ├── sdk/                # TypeScript SDK (@forprompt/sdk)
-│   ├── sdk-python/         # Python SDK
-│   ├── ui/                 # Shared UI components
-│   └── validators/         # Shared Zod schemas
-├── convex/                 # Convex backend
-│   ├── domains/            # Feature modules (DDD)
-│   │   ├── prompts/        # Prompt CRUD & versioning
-│   │   ├── organizations/  # Multi-tenancy
-│   │   └── apiKeys/        # API key management
-│   ├── http/               # HTTP API routes
-│   └── schema.ts           # Database schema
-└── tooling/                # Shared ESLint, Prettier, TS configs
+│   ├── sdk/                    # TypeScript SDK
+│   │   ├── client.ts           # API client
+│   │   ├── trace.ts            # Logging utilities
+│   │   └── mcp/                # MCP server
+│   ├── sdk-python/             # Python SDK
+│   ├── ui/                     # Shared components
+│   └── validators/             # Zod schemas
+├── convex/                     # Backend
+│   ├── domains/
+│   │   ├── promptOrchestrator/ # Prompt CRUD & AI operations
+│   │   ├── logs/               # Trace/span logging
+│   │   ├── tools/              # Tool management
+│   │   ├── webhooks/           # Event delivery
+│   │   └── organizations/      # Multi-tenancy
+│   ├── http/                   # REST API routes
+│   └── schema.ts               # Database schema (29 tables)
+└── tooling/                    # Shared configs
 ```
+
+### Database Schema
+
+ForPrompt uses 29 tables organized by domain:
+
+**Prompt Management:**
+
+- `prompts` — Prompt definitions with metadata
+- `promptVersions` — Individual versions
+- `promptTestResults` — Test execution results
+- `promptAnalysisResults` — AI analysis results
+
+**Logging & Analytics:**
+
+- `traces` — Full conversations
+- `spans` — Individual events
+- `conversationReports` — AI-generated reports
+
+**Team & Auth:**
+
+- `users`, `organizations`, `organizationMembers`
+- `projectApiKeys` (AES-256-GCM encrypted)
+
+---
+
+## Configuration
+
+### Environment Variables
+
+| Variable                            | Required | Description             |
+| ----------------------------------- | -------- | ----------------------- |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes      | Clerk public key        |
+| `CLERK_SECRET_KEY`                  | Yes      | Clerk secret key        |
+| `CLERK_WEBHOOK_SECRET`              | Yes      | Clerk webhook signing   |
+| `NEXT_PUBLIC_CONVEX_URL`            | Yes      | Convex deployment URL   |
+| `CONVEX_DEPLOYMENT`                 | Yes      | Convex deployment name  |
+| `OPENROUTER_API_KEY`                | No       | For AI-powered features |
+
+---
+
+## Deployment
+
+### Docker
+
+```bash
+docker compose up -d
+```
+
+### Vercel
+
+1. Push to GitHub
+2. Import to Vercel
+3. Set environment variables
+4. Deploy
+
+See [SELF_HOSTING.md](SELF_HOSTING.md) for complete instructions.
 
 ---
 
@@ -219,71 +442,29 @@ forprompt-oss/
 | `pnpm convex:deploy` | Deploy Convex to production        |
 | `pnpm lint`          | Lint all code                      |
 | `pnpm typecheck`     | Type check all packages            |
-| `pnpm ui-add`        | Add shadcn/ui components           |
-
----
-
-## Deployment
-
-### Docker
-
-```bash
-docker compose up -d
-```
-
-See [SELF_HOSTING.md](SELF_HOSTING.md) for complete deployment instructions.
-
-### Vercel
-
-1. Push to GitHub
-2. Import to Vercel
-3. Set environment variables
-4. Deploy
-
----
-
-## Configuration
-
-### Environment Variables
-
-| Variable                            | Required | Description                |
-| ----------------------------------- | -------- | -------------------------- |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes      | Clerk public key           |
-| `CLERK_SECRET_KEY`                  | Yes      | Clerk secret key           |
-| `CLERK_WEBHOOK_SECRET`              | Yes      | For Clerk webhooks         |
-| `NEXT_PUBLIC_CONVEX_URL`            | Yes      | Your Convex deployment URL |
-| `CONVEX_DEPLOYMENT`                 | Yes      | Convex deployment name     |
-| `OPENROUTER_API_KEY`                | No       | For AI-powered features    |
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Here's how you can help:
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+---
+
+## Security
+
+For security issues, please see [SECURITY.md](SECURITY.md).
 
 ---
 
 ## License
 
-This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## Acknowledgments
-
-Built with amazing open source tools:
-
-- [Next.js](https://nextjs.org/) - React framework
-- [Convex](https://convex.dev/) - Backend platform
-- [Clerk](https://clerk.com/) - Authentication
-- [shadcn/ui](https://ui.shadcn.com/) - UI components
-- [Turborepo](https://turbo.build/) - Monorepo tooling
+Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 ---
 
