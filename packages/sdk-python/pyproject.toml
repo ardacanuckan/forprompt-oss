@@ -33,6 +33,6 @@ dev = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/your-org/forprompt#readme"
-Issues = "https://github.com/your-org/forprompt/issues"
-Source = "https://github.com/your-org/forprompt"
+Documentation = "https://github.com/ardacanuckan/forprompt-oss#readme"
+Issues = "https://github.com/ardacanuckan/forprompt-oss/issues"
+Source = "https://github.com/ardacanuckan/forprompt-oss"

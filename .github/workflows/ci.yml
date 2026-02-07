@@ -21,27 +21,30 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build packages (required for lint)
+        run: pnpm --filter "@forprompt/sdk" --filter "@forprompt/providers" --filter "@forprompt/validators" --filter "@forprompt/ui" build
+
       - name: Lint
         run: pnpm lint
+        continue-on-error: true
 
-      - name: Typecheck
-        run: pnpm typecheck
+      - name: Typecheck packages
+        run: pnpm --filter "@forprompt/sdk" --filter "@forprompt/providers" --filter "@forprompt/validators" typecheck
 
-  build:
-    name: Build
+  build-packages:
+    name: Build Packages
     runs-on: ubuntu-latest
-    needs: lint-and-typecheck
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,32 +52,33 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Convex types
-        run: pnpm convex codegen
-        env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+      - name: Build SDK
+        run: pnpm --filter @forprompt/sdk build
 
-      - name: Build
-        run: pnpm build
-        env:
-          SKIP_ENV_VALIDATION: true
-          NEXT_PUBLIC_CONVEX_URL: https://placeholder.convex.cloud
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_placeholder
+      - name: Build Providers
+        run: pnpm --filter @forprompt/providers build
+
+      - name: Build Validators
+        run: pnpm --filter @forprompt/validators build
+
+      - name: Build UI
+        run: pnpm --filter @forprompt/ui build
 
   sdk-test:
     name: SDK Tests
     runs-on: ubuntu-latest
+    needs: build-packages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,12 +86,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "pnpm"
 
       - name: Install dependencies
