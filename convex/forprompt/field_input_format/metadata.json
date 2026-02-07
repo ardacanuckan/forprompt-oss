@@ -1,0 +1,11 @@
+{
+  "key": "field_input_format",
+  "name": "Field: Input Format",
+  "description": "Enhancement prompt for the inputFormat field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291277513,
+  "updatedAt": 1769291277513,
+  "lastDeployedAt": 1769294048770
+}

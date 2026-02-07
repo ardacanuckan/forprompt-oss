@@ -1,0 +1,11 @@
+{
+  "key": "field_expected_behavior",
+  "name": "Field: Expected Behavior",
+  "description": "Enhancement prompt for the expectedBehavior field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291277148,
+  "updatedAt": 1769291277148,
+  "lastDeployedAt": 1769294048770
+}

@@ -1,0 +1,11 @@
+{
+  "key": "field_tools_notes",
+  "name": "Field: Tools Notes",
+  "description": "Enhancement prompt for the toolsNotes field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291301321,
+  "updatedAt": 1769291301321,
+  "lastDeployedAt": 1769294048774
+}

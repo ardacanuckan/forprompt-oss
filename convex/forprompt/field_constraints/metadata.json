@@ -1,0 +1,11 @@
+{
+  "key": "field_constraints",
+  "name": "Field: Constraints",
+  "description": "Enhancement prompt for the constraints field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291278168,
+  "updatedAt": 1769291278168,
+  "lastDeployedAt": 1769294048772
+}

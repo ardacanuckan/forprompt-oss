@@ -1,0 +1,11 @@
+{
+  "key": "task_analysis",
+  "name": "Analysis Task",
+  "description": "Task instructions for comprehensive prompt quality evaluation",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291237335,
+  "updatedAt": 1769291237335,
+  "lastDeployedAt": 1769294048767
+}

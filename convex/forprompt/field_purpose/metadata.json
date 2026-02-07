@@ -1,0 +1,11 @@
+{
+  "key": "field_purpose",
+  "name": "Field: Purpose",
+  "description": "Enhancement prompt for the purpose field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291276796,
+  "updatedAt": 1769291276796,
+  "lastDeployedAt": 1769294048769
+}

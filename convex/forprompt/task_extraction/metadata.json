@@ -1,0 +1,11 @@
+{
+  "key": "task_extraction",
+  "name": "Extraction Task",
+  "description": "Task instructions for extracting structured metadata from prompts",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291238431,
+  "updatedAt": 1769291238431,
+  "lastDeployedAt": 1769294048769
+}

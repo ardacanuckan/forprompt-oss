@@ -1,0 +1,26 @@
+# Source files (dist is already included via package.json files field)
+src/
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.eslintrc.*
+eslint.config.*
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+__tests__/
+coverage/
+
+# Dev files
+.turbo/
+node_modules/
+*.log
+
+# Documentation (README is already included)
+*.md
+!README.md
+
+# Config files
+.gitignore
+.prettierrc

@@ -1,0 +1,11 @@
+{
+  "key": "report_conversation_analysis",
+  "name": "Conversation Analysis Report",
+  "description": "Template for analyzing individual conversations and providing success reports",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291301676,
+  "updatedAt": 1769291301676,
+  "lastDeployedAt": 1769294048774
+}

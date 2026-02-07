@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+.turbo
+.cache
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE and editor
+.vscode
+.idea
+
+# Logs
+*.log
+
+# TypeScript incremental build
+*.tsbuildinfo
+
+# Test coverage
+coverage

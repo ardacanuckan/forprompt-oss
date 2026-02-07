@@ -1,0 +1,11 @@
+{
+  "key": "task_generation",
+  "name": "Generation Task",
+  "description": "Task instructions for generating high-quality system prompts",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291236977,
+  "updatedAt": 1769291236977,
+  "lastDeployedAt": 1769294048766
+}

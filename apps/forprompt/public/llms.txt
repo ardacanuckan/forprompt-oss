@@ -1,0 +1,108 @@
+# ForPrompt
+
+> Prompt management made simple
+
+## Overview
+
+ForPrompt is a prompt management platform that makes it easy to version, test, and deploy AI prompts in production. It provides native MCP (Model Context Protocol) support, allowing AI agents in Claude, Cursor, and VS Code to access prompts directly.
+
+## Core Features
+
+### Prompt Version Control
+- Create and manage multiple versions of prompts
+- Compare versions side-by-side with diff view
+- Instant rollback to any previous version
+- Version comments and change tracking
+- Branch and merge workflows
+
+### MCP Server Integration
+- Native MCP (Model Context Protocol) support
+- Works with Claude Desktop, Cursor, VS Code, Continue.dev, Windsurf
+- AI agents can read, create, and update prompts directly
+- No manual copy-pasting between tools
+- Real-time prompt synchronization
+
+### AI-Powered Editing
+- Inline AI suggestions for prompt improvements
+- Automated prompt analysis and scoring
+- Conversation analysis for production insights
+- AI-generated prompt enhancements
+- Quality metrics and recommendations
+
+### SDK & API
+- TypeScript SDK (@forprompt/sdk)
+- Python SDK (forprompt)
+- REST API for custom integrations
+- CLI for deployment automation
+- Zero-latency local file deployment
+
+## Use Cases
+
+1. **Customer Support AI** - Manage support agent prompts with version control and A/B testing
+2. **Code Review Automation** - Deploy and iterate on code review prompts with team collaboration
+3. **Content Generation** - Version and test content generation prompts across different models
+4. **Data Analysis** - Manage prompts for AI-powered analytics with structured configurations
+
+## Technical Details
+
+- **Deployment Model**: Deploy prompts to local TypeScript files (zero latency at runtime)
+- **No Runtime API Calls**: Prompts are bundled with your code, no network dependency
+- **Type Safety**: Full TypeScript support with generated types
+- **Multi-tenancy**: Organization and project-based access control
+- **Real-time Sync**: Changes sync instantly across team members
+
+## Getting Started
+
+```bash
+# Install the SDK
+npm install @forprompt/sdk
+
+# Initialize your project
+npx forprompt init
+
+# Deploy prompts to local files
+npx forprompt deploy
+```
+
+## MCP Integration
+
+Connect your AI coding assistant to ForPrompt:
+
+```json
+{
+  "mcpServers": {
+    "forprompt": {
+      "command": "npx",
+      "args": ["-y", "@forprompt/sdk", "mcp", "start"],
+      "env": {
+        "FORPROMPT_API_KEY": "your_api_key"
+      }
+    }
+  }
+}
+```
+
+## Supported Platforms
+
+- Claude Desktop
+- Cursor IDE
+- VS Code (with MCP extension)
+- Continue.dev
+- Windsurf
+- Any MCP-compatible AI assistant
+
+## Links
+
+- Website: https://forprompt.dev
+- Documentation: https://forprompt.dev/docs
+- MCP Integration: https://forprompt.dev/mcp
+- Blog: https://forprompt.dev/blog
+
+## Contact
+
+- Email: hello@forprompt.dev
+- LinkedIn: https://www.linkedin.com/company/forprompt/
+
+## Keywords
+
+prompt management, MCP server, Model Context Protocol, AI prompts, prompt version control, LLM prompts, Claude MCP, Cursor MCP, prompt engineering, AI prompt deployment, prompt testing, prompt analytics

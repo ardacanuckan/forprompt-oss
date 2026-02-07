@@ -1,0 +1,11 @@
+{
+  "key": "task_edit",
+  "name": "Edit Task",
+  "description": "Task instructions for AI-powered prompt editing with conversation and interview modes",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291276456,
+  "updatedAt": 1769291276456,
+  "lastDeployedAt": 1769294048769
+}

@@ -1,0 +1,22 @@
+{
+  "extends": "@forprompt/tsconfig/base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "dom", "dom.iterable"],
+    "jsx": "preserve",
+    "paths": {
+      "~/*": ["./src/*"],
+      "~/convex/_generated/*": ["./convex/_generated/*"],
+      "@features/*": ["./src/app/features/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@hooks": ["./src/app/hooks"],
+      "@hooks/*": ["./src/app/hooks/*"],
+      "@/app/types": ["./src/app/types"],
+      "@/app/types/*": ["./src/app/types/*"],
+      "@constants": ["./src/app/constants"],
+      "@constants/*": ["./src/app/constants/*"]
+    },
+    "plugins": [{ "name": "next" }]
+  },
+  "include": [".", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

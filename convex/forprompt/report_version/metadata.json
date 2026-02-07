@@ -1,0 +1,11 @@
+{
+  "key": "report_version",
+  "name": "Version Report",
+  "description": "Template for creating overall success reports across all batches",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291302350,
+  "updatedAt": 1769291302350,
+  "lastDeployedAt": 1769294048776
+}

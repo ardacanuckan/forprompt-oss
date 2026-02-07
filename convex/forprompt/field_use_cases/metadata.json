@@ -1,0 +1,11 @@
+{
+  "key": "field_use_cases",
+  "name": "Field: Use Cases",
+  "description": "Enhancement prompt for the useCases field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291300606,
+  "updatedAt": 1769291300606,
+  "lastDeployedAt": 1769294048772
+}

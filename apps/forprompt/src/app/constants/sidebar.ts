@@ -1,0 +1,5 @@
+export const SIDEBAR_MIN_WIDTH = 200;
+export const SIDEBAR_MAX_WIDTH = 400;
+export const SIDEBAR_DEFAULT_WIDTH = 210;
+export const SIDEBAR_COLLAPSED_WIDTH = 60;
+export const COLLAPSE_THRESHOLD = 120;

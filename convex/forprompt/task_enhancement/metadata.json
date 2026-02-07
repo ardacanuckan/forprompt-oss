@@ -1,0 +1,11 @@
+{
+  "key": "task_enhancement",
+  "name": "Enhancement Task",
+  "description": "Task instructions for enhancing text clarity and effectiveness",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291237708,
+  "updatedAt": 1769291237708,
+  "lastDeployedAt": 1769294048768
+}

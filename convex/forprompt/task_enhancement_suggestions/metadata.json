@@ -1,0 +1,11 @@
+{
+  "key": "task_enhancement_suggestions",
+  "name": "Enhancement Suggestions Task",
+  "description": "Task instructions for providing enhancement suggestions for prompts",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291238068,
+  "updatedAt": 1769291238068,
+  "lastDeployedAt": 1769294048768
+}

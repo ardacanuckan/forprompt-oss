@@ -1,0 +1,17 @@
+{
+  "extends": "@forprompt/tsconfig/base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "src/client-browser.ts",
+    "src/storage/**",
+    "src/sync/**"
+  ]
+}

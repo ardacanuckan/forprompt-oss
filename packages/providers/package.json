@@ -1,0 +1,93 @@
+{
+  "name": "@forprompt/providers",
+  "version": "0.1.0",
+  "description": "Provider abstractions for ForPrompt - supporting multiple backends and auth providers",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js",
+      "require": "./dist/auth/index.cjs"
+    },
+    "./data": {
+      "types": "./dist/data/index.d.ts",
+      "import": "./dist/data/index.js",
+      "require": "./dist/data/index.cjs"
+    },
+    "./ai": {
+      "types": "./dist/ai/index.d.ts",
+      "import": "./dist/ai/index.js",
+      "require": "./dist/ai/index.cjs"
+    },
+    "./ai/providers": {
+      "types": "./dist/ai/providers/index.d.ts",
+      "import": "./dist/ai/providers/index.js",
+      "require": "./dist/ai/providers/index.cjs"
+    },
+    "./ai/models": {
+      "types": "./dist/ai/models.d.ts",
+      "import": "./dist/ai/models.js",
+      "require": "./dist/ai/models.cjs"
+    },
+    "./ai/factory": {
+      "types": "./dist/ai/factory.d.ts",
+      "import": "./dist/ai/factory.js",
+      "require": "./dist/ai/factory.cjs"
+    },
+    "./data/drizzle": {
+      "types": "./dist/data/drizzle/index.d.ts",
+      "import": "./dist/data/drizzle/index.js",
+      "require": "./dist/data/drizzle/index.cjs"
+    },
+    "./data/drizzle/schema": {
+      "types": "./dist/data/drizzle/schema/index.d.ts",
+      "import": "./dist/data/drizzle/schema/index.js",
+      "require": "./dist/data/drizzle/schema/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist node_modules .cache",
+    "dev": "tsup --watch",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint --flag unstable_native_nodejs_ts_config",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.38.0",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@forprompt/eslint-config": "workspace:*",
+    "@forprompt/prettier-config": "workspace:*",
+    "@forprompt/tsconfig": "workspace:*",
+    "@vitest/coverage-v8": "^2.1.0",
+    "drizzle-kit": "^0.30.0",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "^8.0.0",
+    "typescript": "catalog:",
+    "vitest": "^2.1.0"
+  },
+  "prettier": "@forprompt/prettier-config"
+}

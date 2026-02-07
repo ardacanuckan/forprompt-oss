@@ -1,0 +1,11 @@
+{
+  "key": "field_additional_notes",
+  "name": "Field: Additional Notes",
+  "description": "Enhancement prompt for the additionalNotes field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291300962,
+  "updatedAt": 1769291300962,
+  "lastDeployedAt": 1769294048773
+}

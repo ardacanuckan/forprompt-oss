@@ -1,0 +1,11 @@
+{
+  "key": "field_output_format",
+  "name": "Field: Output Format",
+  "description": "Enhancement prompt for the outputFormat field",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291277843,
+  "updatedAt": 1769291277843,
+  "lastDeployedAt": 1769294048771
+}

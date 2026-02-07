@@ -1,0 +1,11 @@
+{
+  "key": "base_prompt_engineer",
+  "name": "Base Prompt Engineer",
+  "description": "Foundation prompt engineer persona that applies to all operations",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291236606,
+  "updatedAt": 1769291236606,
+  "lastDeployedAt": 1769294048766
+}

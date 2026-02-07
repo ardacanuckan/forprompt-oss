@@ -1,0 +1,11 @@
+{
+  "key": "report_batch",
+  "name": "Batch Report",
+  "description": "Template for analyzing patterns across multiple conversations in a batch",
+  "activeVersion": 1,
+  "totalVersions": 1,
+  "tools": [],
+  "createdAt": 1769291302010,
+  "updatedAt": 1769291302010,
+  "lastDeployedAt": 1769294048776
+}

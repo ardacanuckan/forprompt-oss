@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "forprompt"
+version = "0.1.0"
+description = "ForPrompt SDK - Fetch and manage prompts from your ForPrompt projects"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["prompt", "llm", "ai", "sdk"]
+authors = [
+  { name = "ForPrompt" }
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+  "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0.0",
+  "pytest-asyncio>=0.21.0",
+]
+
+[project.urls]
+Documentation = "https://github.com/your-org/forprompt#readme"
+Issues = "https://github.com/your-org/forprompt/issues"
+Source = "https://github.com/your-org/forprompt"
