@@ -4,9 +4,6 @@
  * Makes requests to ForPrompt backend
  */
 
-// Default production URL - will be configurable
-const DEFAULT_BASE_URL = "https://wooden-fox-811.convex.site";
-
 export interface DeployResponse {
   project: {
     id: string;
@@ -66,8 +63,13 @@ export interface ValidateResponse {
 export class ApiClient {
   private baseUrl: string;
 
-  constructor(baseUrl?: string) {
-    this.baseUrl = (baseUrl || DEFAULT_BASE_URL).replace(/\/$/, "");
+  constructor(baseUrl: string) {
+    if (!baseUrl) {
+      throw new Error(
+        "Base URL is required. Set FORPROMPT_BASE_URL environment variable.",
+      );
+    }
+    this.baseUrl = baseUrl.replace(/\/$/, "");
   }
 
   /**
@@ -83,7 +85,9 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: "Unknown error" })) as { error?: string };
+      const error = (await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }))) as { error?: string };
       throw new Error(error.error || `HTTP ${response.status}`);
     }
 
@@ -103,7 +107,9 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: "Unknown error" })) as { error?: string };
+      const error = (await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }))) as { error?: string };
       throw new Error(error.error || `HTTP ${response.status}`);
     }
 

@@ -3,13 +3,14 @@
  */
 
 import { v } from "convex/values";
-import { mutation, internalMutation } from "../../_generated/server";
+
+import type { SubscriptionTier } from "../../lib/subscriptions/limits";
+import { internalMutation, mutation } from "../../_generated/server";
 import {
+  getMonthEnd,
+  getMonthStart,
   getTierConfig,
   isUnlimited,
-  getMonthStart,
-  getMonthEnd,
-  type SubscriptionTier,
 } from "../../lib/subscriptions/limits";
 
 /**
@@ -20,24 +21,23 @@ export class UsageLimitError extends Error {
     public limitType: string,
     public current: number,
     public limit: number,
-    public tier: string
+    public tier: string,
   ) {
     super(
-      `Usage limit exceeded for ${limitType}. Current: ${current}, Limit: ${limit}. Upgrade to a higher tier to continue.`
+      `Usage limit exceeded for ${limitType}. Current: ${current}, Limit: ${limit}. Upgrade to a higher tier to continue.`,
     );
     this.name = "UsageLimitError";
   }
 }
 
 /**
- * Internal: Create a default free subscription for a new organization
+ * Internal: Create enterprise subscription for a new organization (OSS default)
  */
 export const createDefaultSubscription = internalMutation({
   args: {
     orgId: v.id("organizations"),
   },
   handler: async (ctx, args) => {
-    // Check if subscription already exists
     const existing = await ctx.db
       .query("organizationSubscriptions")
       .withIndex("by_org", (q) => q.eq("orgId", args.orgId))
@@ -51,10 +51,9 @@ export const createDefaultSubscription = internalMutation({
     const periodStart = getMonthStart();
     const periodEnd = getMonthEnd();
 
-    // Create subscription
     const subscriptionId = await ctx.db.insert("organizationSubscriptions", {
       orgId: args.orgId,
-      tier: "free",
+      tier: "enterprise",
       status: "active",
       cancelAtPeriodEnd: false,
       periodStart,
@@ -63,7 +62,6 @@ export const createDefaultSubscription = internalMutation({
       updatedAt: now,
     });
 
-    // Create initial usage record
     await ctx.db.insert("organizationUsage", {
       orgId: args.orgId,
       periodStart,
@@ -94,7 +92,7 @@ export const incrementUsage = internalMutation({
       v.literal("traces"),
       v.literal("spans"),
       v.literal("promptTests"),
-      v.literal("analysisRuns")
+      v.literal("analysisRuns"),
     ),
     amount: v.number(),
   },
@@ -105,7 +103,7 @@ export const incrementUsage = internalMutation({
     let usage = await ctx.db
       .query("organizationUsage")
       .withIndex("by_org_period", (q) =>
-        q.eq("orgId", args.orgId).eq("periodStart", periodStart)
+        q.eq("orgId", args.orgId).eq("periodStart", periodStart),
       )
       .first();
 
@@ -155,7 +153,7 @@ export const checkUsageLimit = internalMutation({
     metric: v.union(
       v.literal("internalAiTokens"),
       v.literal("productionTokens"),
-      v.literal("traces")
+      v.literal("traces"),
     ),
     additionalUsage: v.optional(v.number()),
   },
@@ -189,7 +187,7 @@ export const checkUsageLimit = internalMutation({
     const usage = await ctx.db
       .query("organizationUsage")
       .withIndex("by_org_period", (q) =>
-        q.eq("orgId", args.orgId).eq("periodStart", periodStart)
+        q.eq("orgId", args.orgId).eq("periodStart", periodStart),
       )
       .first();
 
@@ -243,7 +241,7 @@ export const trackAiUsage = internalMutation({
     let usage = await ctx.db
       .query("organizationUsage")
       .withIndex("by_org_period", (q) =>
-        q.eq("orgId", args.orgId).eq("periodStart", periodStart)
+        q.eq("orgId", args.orgId).eq("periodStart", periodStart),
       )
       .first();
 
@@ -310,15 +308,12 @@ export const resetPeriodUsage = internalMutation({
 });
 
 /**
- * Internal: Update subscription tier (called from Polar webhook)
+ * Internal: Update subscription tier
  */
 export const updateSubscriptionTier = internalMutation({
   args: {
     orgId: v.id("organizations"),
     tier: v.union(v.literal("free"), v.literal("pro"), v.literal("enterprise")),
-    polarCustomerId: v.optional(v.string()),
-    polarSubscriptionId: v.optional(v.string()),
-    productId: v.optional(v.string()),
     status: v.string(),
     periodEnd: v.optional(v.number()),
     cancelAtPeriodEnd: v.optional(v.boolean()),
@@ -332,27 +327,19 @@ export const updateSubscriptionTier = internalMutation({
     const now = Date.now();
 
     if (subscription) {
-      // Update existing subscription
       await ctx.db.patch(subscription._id, {
         tier: args.tier,
         status: args.status,
-        polarCustomerId: args.polarCustomerId,
-        polarSubscriptionId: args.polarSubscriptionId,
-        productId: args.productId,
         periodEnd: args.periodEnd,
         cancelAtPeriodEnd: args.cancelAtPeriodEnd ?? false,
         updatedAt: now,
       });
       return subscription._id;
     } else {
-      // Create new subscription
       return await ctx.db.insert("organizationSubscriptions", {
         orgId: args.orgId,
         tier: args.tier,
         status: args.status,
-        polarCustomerId: args.polarCustomerId,
-        polarSubscriptionId: args.polarSubscriptionId,
-        productId: args.productId,
         periodStart: getMonthStart(),
         periodEnd: args.periodEnd,
         cancelAtPeriodEnd: args.cancelAtPeriodEnd ?? false,

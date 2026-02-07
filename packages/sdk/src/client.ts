@@ -11,10 +11,9 @@
  * ```
  */
 
-import type { ForPromptConfig, Prompt, GetPromptOptions } from "./types";
+import type { ForPromptConfig, GetPromptOptions, Prompt } from "./types";
 import { ForPromptError } from "./types";
 
-const DEFAULT_BASE_URL = "https://wooden-fox-811.convex.site";
 const DEFAULT_TIMEOUT = 30_000; // 30 seconds
 const DEFAULT_RETRIES = 3;
 
@@ -24,8 +23,8 @@ const DEFAULT_RETRIES = 3;
 export interface ForPromptClientConfig {
   /** Project API key (required) */
   apiKey: string;
-  /** Base URL for API (default: https://wooden-fox-811.convex.site) */
-  baseUrl?: string;
+  /** Base URL for API (required - set FORPROMPT_BASE_URL env var) */
+  baseUrl: string;
   /** Request timeout in milliseconds (default: 30000) */
   timeout?: number;
   /** Number of retry attempts for failed requests (default: 3) */
@@ -47,9 +46,21 @@ export class ForPrompt {
   private timeout: number;
   private retries: number;
 
-  constructor(config: ForPromptClientConfig | ForPromptConfig | { apiKey: string; baseUrl?: string }) {
+  constructor(
+    config:
+      | ForPromptClientConfig
+      | ForPromptConfig
+      | { apiKey: string; baseUrl: string },
+  ) {
     this.apiKey = config.apiKey || "";
-    this.baseUrl = (config.baseUrl || DEFAULT_BASE_URL).replace(/\/$/, "");
+    if (!config.baseUrl) {
+      throw new ForPromptError(
+        "Base URL is required. Set FORPROMPT_BASE_URL environment variable or pass baseUrl in config.",
+        400,
+        "MISSING_BASE_URL",
+      );
+    }
+    this.baseUrl = config.baseUrl.replace(/\/$/, "");
     this.timeout = (config as ForPromptClientConfig).timeout ?? DEFAULT_TIMEOUT;
     this.retries = (config as ForPromptClientConfig).retries ?? DEFAULT_RETRIES;
   }
@@ -59,7 +70,7 @@ export class ForPrompt {
    */
   private async fetchWithTimeout(
     url: string,
-    options: RequestInit
+    options: RequestInit,
   ): Promise<Response> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -75,7 +86,7 @@ export class ForPrompt {
         throw new ForPromptError(
           `Request timeout after ${this.timeout}ms`,
           408,
-          "TIMEOUT"
+          "TIMEOUT",
         );
       }
       throw error;
@@ -89,7 +100,7 @@ export class ForPrompt {
    */
   private async fetchWithRetry(
     url: string,
-    options: RequestInit
+    options: RequestInit,
   ): Promise<Response> {
     let lastError: Error | null = null;
 
@@ -111,7 +122,7 @@ export class ForPrompt {
         lastError = new ForPromptError(
           `Server error: ${response.status}`,
           response.status,
-          "SERVER_ERROR"
+          "SERVER_ERROR",
         );
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
@@ -129,10 +140,9 @@ export class ForPrompt {
       }
     }
 
-    throw lastError || new ForPromptError(
-      "Request failed after retries",
-      500,
-      "RETRY_EXHAUSTED"
+    throw (
+      lastError ||
+      new ForPromptError("Request failed after retries", 500, "RETRY_EXHAUSTED")
     );
   }
 
@@ -155,7 +165,7 @@ export class ForPrompt {
       throw new ForPromptError(
         "API key is required. Set FORPROMPT_API_KEY environment variable or pass apiKey in config.",
         401,
-        "MISSING_API_KEY"
+        "MISSING_API_KEY",
       );
     }
 
@@ -164,7 +174,7 @@ export class ForPrompt {
       throw new ForPromptError(
         "Prompt key must be a non-empty string",
         400,
-        "INVALID_INPUT"
+        "INVALID_INPUT",
       );
     }
 
@@ -172,7 +182,7 @@ export class ForPrompt {
       throw new ForPromptError(
         "Prompt key must be 256 characters or less",
         400,
-        "INVALID_INPUT"
+        "INVALID_INPUT",
       );
     }
 
@@ -181,7 +191,7 @@ export class ForPrompt {
         throw new ForPromptError(
           "Version must be a positive integer",
           400,
-          "INVALID_INPUT"
+          "INVALID_INPUT",
         );
       }
     }
@@ -202,11 +212,13 @@ export class ForPrompt {
     });
 
     if (!response.ok) {
-      const errorData = (await response.json().catch(() => ({ error: "Unknown error" }))) as { error?: string };
+      const errorData = (await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }))) as { error?: string };
       throw new ForPromptError(
         errorData.error || `Failed to fetch prompt: ${key}`,
         response.status,
-        response.status === 404 ? "PROMPT_NOT_FOUND" : "API_ERROR"
+        response.status === 404 ? "PROMPT_NOT_FOUND" : "API_ERROR",
       );
     }
 
@@ -225,7 +237,7 @@ export class ForPrompt {
    */
   async getPrompts(
     keys: string[],
-    options?: GetPromptOptions
+    options?: GetPromptOptions,
   ): Promise<Map<string, Prompt>> {
     // Limit concurrent requests to avoid overwhelming the server
     const CONCURRENCY_LIMIT = 5;
@@ -236,7 +248,7 @@ export class ForPrompt {
       const batch = keys.slice(i, i + CONCURRENCY_LIMIT);
 
       const results = await Promise.allSettled(
-        batch.map((key) => this.getPrompt(key, options))
+        batch.map((key) => this.getPrompt(key, options)),
       );
 
       results.forEach((result, index) => {
@@ -281,9 +293,19 @@ export class ForPrompt {
  * const prompt = await forprompt.getPrompt("userContextPrompt");
  * ```
  */
-export function createForPrompt(config?: Partial<ForPromptClientConfig>): ForPrompt {
+export function createForPrompt(
+  config?: Partial<ForPromptClientConfig>,
+): ForPrompt {
   const apiKey = config?.apiKey || process.env.FORPROMPT_API_KEY || "";
-  const baseUrl = config?.baseUrl || process.env.FORPROMPT_BASE_URL;
+  const baseUrl = config?.baseUrl || process.env.FORPROMPT_BASE_URL || "";
+
+  if (!baseUrl) {
+    throw new ForPromptError(
+      "FORPROMPT_BASE_URL environment variable is required. Set it to your Convex deployment URL.",
+      400,
+      "MISSING_BASE_URL",
+    );
+  }
 
   return new ForPrompt({
     apiKey,

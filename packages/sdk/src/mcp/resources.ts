@@ -5,28 +5,33 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { ForPrompt } from "../client.js";
-import type { ForPromptMcpServerConfig } from "./server.js";
-import type { Prompt, SyncResponse } from "../types.js";
 
-const DEFAULT_BASE_URL = "https://wooden-fox-811.convex.site";
+import type { ForPrompt } from "../client.js";
+import type { Prompt, SyncResponse } from "../types.js";
+import type { ForPromptMcpServerConfig } from "./server.js";
 
 /**
  * Fetch all prompts using the sync endpoint
  */
 async function fetchAllPrompts(
-  config: ForPromptMcpServerConfig
+  config: ForPromptMcpServerConfig,
 ): Promise<Prompt[]> {
   const apiKey = config.apiKey || process.env.FORPROMPT_API_KEY;
   const baseUrl = (
     config.baseUrl ||
     process.env.FORPROMPT_BASE_URL ||
-    DEFAULT_BASE_URL
+    ""
   ).replace(/\/$/, "");
+
+  if (!baseUrl) {
+    throw new Error(
+      "Base URL is required. Set FORPROMPT_BASE_URL environment variable.",
+    );
+  }
 
   if (!apiKey) {
     throw new Error(
-      "API key is required. Set FORPROMPT_API_KEY environment variable."
+      "API key is required. Set FORPROMPT_API_KEY environment variable.",
     );
   }
 
@@ -62,7 +67,9 @@ function parseUri(uri: string): {
   // forprompt://prompts/{key}/v{number} -> specific version
   // forprompt://prompts/{key}/metadata -> metadata only
 
-  const match = uri.match(/^forprompt:\/\/prompts(?:\/([^/]+))?(?:\/(v\d+|metadata))?$/);
+  const match = uri.match(
+    /^forprompt:\/\/prompts(?:\/([^/]+))?(?:\/(v\d+|metadata))?$/,
+  );
 
   if (!match) {
     return { type: "list" };
@@ -154,7 +161,7 @@ function formatPromptResource(prompt: Prompt): string {
 export function registerResources(
   server: McpServer,
   client: ForPrompt,
-  config: ForPromptMcpServerConfig
+  config: ForPromptMcpServerConfig,
 ): void {
   // Resource template for prompts
   server.resource(
@@ -223,6 +230,6 @@ export function registerResources(
           },
         ],
       };
-    }
+    },
   );
 }

@@ -1,6 +1,7 @@
 {
   "name": "forprompt",
   "private": true,
+  "license": "Apache-2.0",
   "engines": {
     "node": "^22.21.0",
     "pnpm": "^10.19.0"
@@ -14,7 +15,6 @@
     "convex:deploy": "convex deploy",
     "dev": "turbo watch dev --continue",
     "dev:next": "turbo watch dev -F @forprompt/forprompt...",
-    "dev:understand": "turbo watch dev -F @forprompt/understand-web...",
     "format": "turbo run format --continue -- --cache --cache-location .cache/.prettiercache",
     "format:fix": "turbo run format --continue -- --write --cache --cache-location .cache/.prettiercache",
     "lint": "turbo run lint --continue -- --cache --cache-location .cache/.eslintcache",
@@ -23,9 +23,7 @@
     "postinstall": "pnpm lint:ws",
     "prepare": "pre-commit install || true",
     "typecheck": "turbo run typecheck",
-    "ui-add": "turbo run ui-add",
-    "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ui-add": "turbo run ui-add"
   },
   "devDependencies": {
     "@forprompt/prettier-config": "workspace:*",

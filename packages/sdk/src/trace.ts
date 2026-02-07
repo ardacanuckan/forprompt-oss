@@ -1,18 +1,18 @@
 /**
  * ForPrompt Logger
- * 
+ *
  * Implements trace/span model for logging AI conversations
- * 
+ *
  * @example Basic usage
  * ```typescript
  * import { logger } from "@forprompt/sdk";
- * 
+ *
  * // Start a trace
  * logger.startTrace("onboardingprompt");
- * 
+ *
  * // Log user message
  * await logger.log({ role: "user", content: "Hello" });
- * 
+ *
  * // Log AI response
  * await logger.log({
  *   role: "assistant",
@@ -20,7 +20,7 @@
  *   model: "gpt-4o",
  *   tokens: { output: 120 }
  * });
- * 
+ *
  * // End trace (optional)
  * logger.endTrace();
  * ```
@@ -28,15 +28,13 @@
 
 import { ForPromptError } from "./types";
 
-const DEFAULT_BASE_URL = "https://wooden-fox-811.convex.site";
-
 /**
  * Generate a simple unique ID (UUID v4-like)
  */
 function generateId(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -91,7 +89,15 @@ export class ForPromptLogger {
 
   constructor(config?: { apiKey?: string; baseUrl?: string; source?: string }) {
     this.apiKey = config?.apiKey || process.env.FORPROMPT_API_KEY || "";
-    this.baseUrl = (config?.baseUrl || DEFAULT_BASE_URL).replace(/\/$/, "");
+    const baseUrl = config?.baseUrl || process.env.FORPROMPT_BASE_URL || "";
+    if (!baseUrl) {
+      throw new ForPromptError(
+        "FORPROMPT_BASE_URL environment variable is required.",
+        400,
+        "MISSING_BASE_URL",
+      );
+    }
+    this.baseUrl = baseUrl.replace(/\/$/, "");
     this.source = config?.source || "sdk";
   }
 
@@ -103,7 +109,10 @@ export class ForPromptLogger {
    * @param options.traceId - Optional custom trace ID (auto-generated if not provided)
    * @param options.versionNumber - Prompt version number for analytics tracking
    */
-  startTrace(promptKey: string, options?: { traceId?: string; versionNumber?: number }): string {
+  startTrace(
+    promptKey: string,
+    options?: { traceId?: string; versionNumber?: number },
+  ): string {
     this.traceId = options?.traceId || generateId();
     this.promptKey = promptKey;
     this.versionNumber = options?.versionNumber ?? null;
@@ -119,7 +128,7 @@ export class ForPromptLogger {
       throw new ForPromptError(
         "API key is required. Set FORPROMPT_API_KEY environment variable or pass apiKey in config.",
         401,
-        "MISSING_API_KEY"
+        "MISSING_API_KEY",
       );
     }
 
@@ -153,11 +162,13 @@ export class ForPromptLogger {
     });
 
     if (!response.ok) {
-      const errorData = (await response.json().catch(() => ({ error: "Unknown error" }))) as { error?: string };
+      const errorData = (await response
+        .json()
+        .catch(() => ({ error: "Unknown error" }))) as { error?: string };
       throw new ForPromptError(
         errorData.error || "Failed to log span",
         response.status,
-        "LOG_ERROR"
+        "LOG_ERROR",
       );
     }
   }
@@ -216,12 +227,14 @@ export class ForPromptLogger {
    * });
    * ```
    */
-  async logRequest(options: SingleRequestOptions): Promise<{ traceId: string }> {
+  async logRequest(
+    options: SingleRequestOptions,
+  ): Promise<{ traceId: string }> {
     if (!this.apiKey) {
       throw new ForPromptError(
         "API key is required. Set FORPROMPT_API_KEY environment variable or pass apiKey in config.",
         401,
-        "MISSING_API_KEY"
+        "MISSING_API_KEY",
       );
     }
 
@@ -248,11 +261,13 @@ export class ForPromptLogger {
     });
 
     if (!inputResponse.ok) {
-      const errorData = (await inputResponse.json().catch(() => ({ error: "Unknown error" }))) as { error?: string };
+      const errorData = (await inputResponse
+        .json()
+        .catch(() => ({ error: "Unknown error" }))) as { error?: string };
       throw new ForPromptError(
         errorData.error || "Failed to log input span",
         inputResponse.status,
-        "LOG_ERROR"
+        "LOG_ERROR",
       );
     }
 
@@ -282,11 +297,13 @@ export class ForPromptLogger {
     });
 
     if (!outputResponse.ok) {
-      const errorData = (await outputResponse.json().catch(() => ({ error: "Unknown error" }))) as { error?: string };
+      const errorData = (await outputResponse
+        .json()
+        .catch(() => ({ error: "Unknown error" }))) as { error?: string };
       throw new ForPromptError(
         errorData.error || "Failed to log output span",
         outputResponse.status,
-        "LOG_ERROR"
+        "LOG_ERROR",
       );
     }
 
@@ -297,7 +314,11 @@ export class ForPromptLogger {
 /**
  * Create a ForPrompt logger instance
  */
-export function createLogger(config?: { apiKey?: string; baseUrl?: string; source?: string }): ForPromptLogger {
+export function createLogger(config?: {
+  apiKey?: string;
+  baseUrl?: string;
+  source?: string;
+}): ForPromptLogger {
   return new ForPromptLogger(config);
 }
 
@@ -306,7 +327,3 @@ export function createLogger(config?: { apiKey?: string; baseUrl?: string; sourc
  * Auto-configured from environment variables
  */
 export const logger = createLogger();
-
-
-
-

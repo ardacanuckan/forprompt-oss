@@ -80,39 +80,10 @@ export type TierConfig = (typeof SUBSCRIPTION_TIERS)[SubscriptionTier];
 export type FeatureName = keyof (typeof SUBSCRIPTION_TIERS)["free"]["features"];
 
 /**
- * Polar product ID to subscription tier mapping
- * These product IDs match what's configured in Polar dashboard
+ * OSS: Always returns enterprise tier
  */
-export const PRODUCT_TO_TIER: Record<string, SubscriptionTier> = {
-  // Production Polar product IDs
-  "49e53996-7af9-4a1b-8cce-4a39a7b58ca9": "pro",
-  "23a36f8f-a4a4-430b-a36d-8820d58181e4": "enterprise",
-  // Sandbox Polar product IDs
-  "725fd140-2d21-4f5a-997d-79ffa325c874": "pro",
-  "8e9bdc09-46a4-4b88-88eb-ce0214f2ae5a": "enterprise",
-};
-
-/**
- * Check if a product ID maps to a paid tier
- * If product ID is not in mapping, default behavior can be configured
- */
-export function getTierFromProductId(productId: string): SubscriptionTier {
-  // Check direct mapping first
-  if (PRODUCT_TO_TIER[productId]) {
-    return PRODUCT_TO_TIER[productId];
-  }
-
-  // Check if product name contains tier indicators
-  const lowerProductId = productId.toLowerCase();
-  if (lowerProductId.includes("enterprise")) {
-    return "enterprise";
-  }
-  if (lowerProductId.includes("pro")) {
-    return "pro";
-  }
-
-  // Default to pro for unknown paid products
-  return "pro";
+export function getDefaultTier(): SubscriptionTier {
+  return "enterprise";
 }
 
 /**
@@ -127,7 +98,7 @@ export function getTierConfig(tier: SubscriptionTier): TierConfig {
  */
 export function isFeatureAvailable(
   tier: SubscriptionTier,
-  feature: FeatureName
+  feature: FeatureName,
 ): boolean {
   const config = SUBSCRIPTION_TIERS[tier];
   return config.features[feature] ?? false;
@@ -145,7 +116,7 @@ export function getLimit(
     | "maxPrompts"
     | "maxProjects"
     | "maxMembers"
-    | "maxWebhooks"
+    | "maxWebhooks",
 ): number {
   return SUBSCRIPTION_TIERS[tier][metric];
 }
@@ -169,6 +140,14 @@ export function getMonthStart(date: Date = new Date()): number {
  * Helper to get end of current month timestamp
  */
 export function getMonthEnd(date: Date = new Date()): number {
-  const end = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+  const end = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999,
+  );
   return end.getTime();
 }

@@ -1,23 +1,22 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ConvexSyncProvider } from "@components/providers";
 
 import { cn } from "@forprompt/ui";
 import { ThemeProvider } from "@forprompt/ui/theme";
 import { Toaster } from "@forprompt/ui/toast";
 
 import { ConvexClientProvider } from "~/convex/ConvexClientProvider";
-import { ConvexSyncProvider } from "@components/providers";
-import { PolarProvider } from "~/providers/PolarProvider";
-import { PaywallProvider } from "~/providers/PaywallProvider";
-import { PostHogProvider } from "~/providers/PostHogProvider";
 import { env } from "~/env";
+import { PostHogProvider } from "~/providers/PostHogProvider";
 
 import "~/app/styles.css";
 
-const baseUrl = env.VERCEL_ENV === "production" 
-  ? "https://forprompt.dev" 
-  : "http://localhost:3000";
+const baseUrl =
+  env.VERCEL_ENV === "production"
+    ? "https://forprompt.dev"
+    : "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -25,7 +24,8 @@ export const metadata: Metadata = {
     default: "ForPrompt - Prompt management made simple",
     template: "%s | ForPrompt",
   },
-  description: "Version, test, and deploy AI prompts with MCP support for Claude, Cursor, and VS Code. The easiest way to manage prompts in production.",
+  description:
+    "Version, test, and deploy AI prompts with MCP support for Claude, Cursor, and VS Code. The easiest way to manage prompts in production.",
   keywords: [
     "prompt management",
     "MCP server",
@@ -49,7 +49,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     title: "ForPrompt - Prompt management made simple",
-    description: "Version, test, and deploy AI prompts with MCP support for Claude, Cursor, and VS Code.",
+    description:
+      "Version, test, and deploy AI prompts with MCP support for Claude, Cursor, and VS Code.",
     url: "https://forprompt.dev",
     siteName: "ForPrompt",
     images: [
@@ -64,7 +65,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ForPrompt - Prompt management made simple",
-    description: "Version, test, and deploy AI prompts with MCP support for Claude, Cursor, and VS Code.",
+    description:
+      "Version, test, and deploy AI prompts with MCP support for Claude, Cursor, and VS Code.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -91,9 +93,7 @@ const organizationSchema = {
   url: "https://forprompt.dev",
   logo: "https://forprompt.dev/logo.png",
   description: "Prompt management made simple for AI teams",
-  sameAs: [
-    "https://www.linkedin.com/company/forprompt/",
-  ],
+  sameAs: ["https://www.linkedin.com/company/forprompt/"],
   contactPoint: {
     "@type": "ContactPoint",
     email: "hello@forprompt.dev",
@@ -107,7 +107,8 @@ const softwareSchema = {
   name: "ForPrompt",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Web, macOS, Windows, Linux",
-  description: "Version control, testing, and deployment platform for AI prompts with MCP support",
+  description:
+    "Version control, testing, and deployment platform for AI prompts with MCP support",
   url: "https://forprompt.dev",
   author: {
     "@type": "Organization",
@@ -127,7 +128,8 @@ const softwareSchema = {
     "CLI deployment tools",
     "Team collaboration",
   ],
-  keywords: "prompt management, MCP server, Model Context Protocol, AI prompts, prompt version control",
+  keywords:
+    "prompt management, MCP server, Model Context Protocol, AI prompts, prompt version control",
 };
 
 const faqSchema = {
@@ -204,7 +206,8 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           modalContent: "bg-[#111113]",
           headerTitle: "text-text-primary",
           headerSubtitle: "text-text-secondary",
-          socialButtonsBlockButton: "bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-text-primary h-11 px-4",
+          socialButtonsBlockButton:
+            "bg-neutral-900 hover:bg-neutral-800 border-neutral-800 text-text-primary h-11 px-4",
           socialButtonsBlockButtonText: "text-text-primary text-sm font-medium",
           socialButtonsBlockButtonArrow: "text-text-primary",
           formButtonPrimary: "bg-neutral-200 hover:bg-white text-neutral-900",
@@ -212,7 +215,8 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           identityPreviewText: "text-text-primary",
           identityPreviewEditButton: "text-text-secondary",
           formFieldLabel: "text-text-secondary",
-          formFieldInput: "bg-neutral-900 border-neutral-800 text-text-primary focus:border-neutral-700",
+          formFieldInput:
+            "bg-neutral-900 border-neutral-800 text-text-primary focus:border-neutral-700",
           dividerLine: "bg-neutral-800",
           dividerText: "text-text-secondary",
         },
@@ -227,7 +231,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           {/* JSON-LD Structured Data for SEO and AI Discoverability */}
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(organizationSchema),
+            }}
           />
           <script
             type="application/ld+json"
@@ -245,15 +251,15 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             geistMono.variable,
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            forcedTheme="dark"
+          >
             <PostHogProvider>
               <ConvexClientProvider>
-                <PolarProvider>
-                  <PaywallProvider>
-                    <ConvexSyncProvider />
-                    {props.children}
-                  </PaywallProvider>
-                </PolarProvider>
+                <ConvexSyncProvider />
+                {props.children}
               </ConvexClientProvider>
             </PostHogProvider>
             <Toaster />

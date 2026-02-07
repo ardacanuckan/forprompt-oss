@@ -14,7 +14,7 @@
  * // Or with explicit config
  * await startMcpServer({
  *   apiKey: "fp_xxx",
- *   baseUrl: "https://wooden-fox-811.convex.site"
+ *   baseUrl: process.env.FORPROMPT_BASE_URL
  * });
  * ```
  */

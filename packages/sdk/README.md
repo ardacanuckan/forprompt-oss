@@ -26,6 +26,7 @@ npx forprompt init
 ```
 
 This will:
+
 - Ask for your API key (get it from your ForPrompt Dashboard)
 - Save it to `.env` file
 - Create `forprompt/` directory
@@ -43,10 +44,9 @@ Syncs all prompts from your ForPrompt project to local files.
 **Option A: Import from local files (recommended)**
 
 ```typescript
-import { userContextPrompt } from "./forprompt";
-
 // Or use the helper
-import { getPrompt } from "./forprompt";
+import { getPrompt, userContextPrompt } from "./forprompt";
+
 const prompt = getPrompt("userContextPrompt");
 ```
 
@@ -118,7 +118,7 @@ import { createForPrompt } from "@forprompt/sdk";
 
 const client = createForPrompt({
   apiKey: "fp_xxx",
-  baseUrl: "https://wooden-fox-811.convex.site", // Optional: Custom backend URL
+  baseUrl: process.env.FORPROMPT_BASE_URL!, // Required: Your self-hosted backend URL
 });
 
 const prompt = await client.getPrompt("userContextPrompt");
@@ -132,10 +132,10 @@ const promptV2 = await forprompt.getPrompt("userContextPrompt", { version: 2 });
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `FORPROMPT_API_KEY` | Your project API key (required) |
-| `FORPROMPT_BASE_URL` | Custom API URL (optional) |
+| Variable             | Description                     |
+| -------------------- | ------------------------------- |
+| `FORPROMPT_API_KEY`  | Your project API key (required) |
+| `FORPROMPT_BASE_URL` | Custom API URL (optional)       |
 
 ## Logging
 
@@ -150,7 +150,7 @@ import { logger } from "@forprompt/sdk";
 
 // Start a trace
 const traceId = logger.startTrace("onboarding", {
-  versionNumber: 2  // Track prompt version
+  versionNumber: 2, // Track prompt version
 });
 
 // Log user message
@@ -162,7 +162,7 @@ await logger.log({
   content: "Hi! How can I help?",
   model: "gpt-4o",
   tokens: { input: 10, output: 50 },
-  durationMs: 1200
+  durationMs: 1200,
 });
 
 // End trace (optional)
@@ -186,23 +186,28 @@ const { traceId } = await logger.logRequest({
   output: "Here are 5 steps...",
   model: "gpt-4o",
   tokens: { input: 10, output: 150 },
-  durationMs: 1200
+  durationMs: 1200,
 });
 ```
 
 ### When to Use Each Mode
 
-| Mode | Method | Use Case |
-|------|--------|----------|
-| **Conversation** | `startTrace()` + `log()` | Multi-turn chats, chatbots, context-dependent conversations |
-| **Single Request** | `logRequest()` | One-shot API calls, batch processing, simple Q&A |
+| Mode               | Method                   | Use Case                                                    |
+| ------------------ | ------------------------ | ----------------------------------------------------------- |
+| **Conversation**   | `startTrace()` + `log()` | Multi-turn chats, chatbots, context-dependent conversations |
+| **Single Request** | `logRequest()`           | One-shot API calls, batch processing, simple Q&A            |
 
 ## TypeScript
 
 Full type definitions included:
 
 ```typescript
-import type { Prompt, ForPromptConfig, LogOptions, SingleRequestOptions } from "@forprompt/sdk";
+import type {
+  ForPromptConfig,
+  LogOptions,
+  Prompt,
+  SingleRequestOptions,
+} from "@forprompt/sdk";
 ```
 
 ## Workflow
@@ -264,22 +269,22 @@ Add to `.cursor/mcp.json` in your project:
 
 ### Available MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `forprompt_get_prompt` | Fetch a prompt by its key |
-| `forprompt_list_prompts` | List all available prompts |
-| `forprompt_search_prompts` | Search prompts by text |
-| `forprompt_get_prompt_metadata` | Get prompt metadata only |
-| `forprompt_get_system_prompt` | Get raw system prompt text |
+| Tool                            | Description                |
+| ------------------------------- | -------------------------- |
+| `forprompt_get_prompt`          | Fetch a prompt by its key  |
+| `forprompt_list_prompts`        | List all available prompts |
+| `forprompt_search_prompts`      | Search prompts by text     |
+| `forprompt_get_prompt_metadata` | Get prompt metadata only   |
+| `forprompt_get_system_prompt`   | Get raw system prompt text |
 
 ### Available MCP Resources
 
-| URI | Description |
-|-----|-------------|
-| `forprompt://prompts` | List all prompts |
-| `forprompt://prompts/{key}` | Get a specific prompt |
-| `forprompt://prompts/{key}/v{n}` | Get a specific version |
-| `forprompt://prompts/{key}/metadata` | Get metadata only |
+| URI                                  | Description            |
+| ------------------------------------ | ---------------------- |
+| `forprompt://prompts`                | List all prompts       |
+| `forprompt://prompts/{key}`          | Get a specific prompt  |
+| `forprompt://prompts/{key}/v{n}`     | Get a specific version |
+| `forprompt://prompts/{key}/metadata` | Get metadata only      |
 
 ### Supported Editors
 
@@ -291,7 +296,7 @@ Add to `.cursor/mcp.json` in your project:
 
 ## License
 
-AGPL-3.0-or-later
+Apache-2.0
 
 ## Author
 

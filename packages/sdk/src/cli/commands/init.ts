@@ -6,19 +6,23 @@
  */
 
 import * as readline from "readline";
+
+import { createApiClient } from "../utils/api";
 import {
-  saveProjectConfig,
-  saveApiKeyToEnv,
+  getApiKey,
   getForpromptDir,
   loadProjectConfig,
-  getApiKey,
+  saveApiKeyToEnv,
+  saveProjectConfig,
 } from "../utils/config";
-import { createApiClient } from "../utils/api";
 
 /**
  * Prompt user for input
  */
-async function prompt(question: string, defaultValue?: string): Promise<string> {
+async function prompt(
+  question: string,
+  defaultValue?: string,
+): Promise<string> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -52,7 +56,7 @@ export async function initCommand(options: {
   if (existingConfig && existingApiKey) {
     const overwrite = await prompt(
       "Project already initialized. Overwrite? (y/N)",
-      "N"
+      "N",
     );
     if (overwrite.toLowerCase() !== "y") {
       console.log("Aborted.");
@@ -74,6 +78,13 @@ export async function initCommand(options: {
   // Validate API key
   console.log("\n🔑 Validating API key...");
   const baseUrl = options.baseUrl || process.env.FORPROMPT_BASE_URL;
+
+  if (!baseUrl) {
+    console.error("❌ FORPROMPT_BASE_URL environment variable is required.");
+    console.error("   Set it to your Convex deployment URL.");
+    process.exit(1);
+  }
+
   const api = createApiClient(baseUrl);
 
   try {
@@ -101,7 +112,7 @@ export async function initCommand(options: {
       projectName: project.projectName,
       projectSlug: project.projectSlug,
       apiKey: apiKey, // Won't be saved to file, just used for reference
-      baseUrl: baseUrl || "https://wooden-fox-811.convex.site",
+      baseUrl: baseUrl,
     });
     console.log(`📁 Created ${getForpromptDir()}/.forpromptrc`);
 
@@ -114,7 +125,7 @@ export async function initCommand(options: {
   } catch (error) {
     console.error(
       "❌ Failed to validate API key:",
-      error instanceof Error ? error.message : "Unknown error"
+      error instanceof Error ? error.message : "Unknown error",
     );
     process.exit(1);
   }

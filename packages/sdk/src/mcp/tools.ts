@@ -6,11 +6,10 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import type { ForPrompt } from "../client.js";
-import type { ForPromptMcpServerConfig } from "./server.js";
-import type { Prompt, SyncResponse } from "../types.js";
 
-const DEFAULT_BASE_URL = "https://wooden-fox-811.convex.site";
+import type { ForPrompt } from "../client.js";
+import type { Prompt, SyncResponse } from "../types.js";
+import type { ForPromptMcpServerConfig } from "./server.js";
 
 /**
  * Get API config from config object or environment
@@ -23,12 +22,18 @@ function getApiConfig(config: ForPromptMcpServerConfig): {
   const baseUrl = (
     config.baseUrl ||
     process.env.FORPROMPT_BASE_URL ||
-    DEFAULT_BASE_URL
+    ""
   ).replace(/\/$/, "");
 
   if (!apiKey) {
     throw new Error(
-      "API key is required. Set FORPROMPT_API_KEY environment variable."
+      "API key is required. Set FORPROMPT_API_KEY environment variable.",
+    );
+  }
+
+  if (!baseUrl) {
+    throw new Error(
+      "Base URL is required. Set FORPROMPT_BASE_URL environment variable.",
     );
   }
 
@@ -39,7 +44,7 @@ function getApiConfig(config: ForPromptMcpServerConfig): {
  * Fetch all prompts using the sync endpoint
  */
 async function fetchAllPrompts(
-  config: ForPromptMcpServerConfig
+  config: ForPromptMcpServerConfig,
 ): Promise<Prompt[]> {
   const { apiKey, baseUrl } = getApiConfig(config);
 
@@ -72,7 +77,7 @@ async function createPrompt(
     name: string;
     description?: string;
     systemPrompt?: string;
-  }
+  },
 ): Promise<{ promptId: string; versionId?: string; versionNumber?: number }> {
   const { apiKey, baseUrl } = getApiConfig(config);
 
@@ -116,7 +121,7 @@ async function updatePrompt(
     useCases?: string;
     additionalNotes?: string;
     toolsNotes?: string;
-  }
+  },
 ): Promise<{ promptId: string }> {
   const { apiKey, baseUrl } = getApiConfig(config);
 
@@ -149,7 +154,7 @@ async function createVersionApi(
     systemPrompt: string;
     description?: string;
     setAsActive?: boolean;
-  }
+  },
 ): Promise<{ versionId: string; versionNumber: number }> {
   const { apiKey, baseUrl } = getApiConfig(config);
 
@@ -169,7 +174,10 @@ async function createVersionApi(
     throw new Error(errorData.error || "Failed to create version");
   }
 
-  return response.json() as Promise<{ versionId: string; versionNumber: number }>;
+  return response.json() as Promise<{
+    versionId: string;
+    versionNumber: number;
+  }>;
 }
 
 /**
@@ -177,17 +185,20 @@ async function createVersionApi(
  */
 async function deletePromptApi(
   config: ForPromptMcpServerConfig,
-  key: string
+  key: string,
 ): Promise<{ success: boolean }> {
   const { apiKey, baseUrl } = getApiConfig(config);
 
-  const response = await fetch(`${baseUrl}/api/prompts?key=${encodeURIComponent(key)}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-Key": apiKey,
+  const response = await fetch(
+    `${baseUrl}/api/prompts?key=${encodeURIComponent(key)}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     const errorData = (await response.json().catch(() => ({
@@ -277,7 +288,7 @@ const GetPromptInputSchema = z.object({
     .number()
     .optional()
     .describe(
-      "Specific version number to fetch (optional, defaults to active version)"
+      "Specific version number to fetch (optional, defaults to active version)",
     ),
 });
 
@@ -306,10 +317,13 @@ const CreatePromptInputSchema = z.object({
   key: z
     .string()
     .describe(
-      "Unique key identifier for the prompt (lowercase, no spaces, use underscores)"
+      "Unique key identifier for the prompt (lowercase, no spaces, use underscores)",
     ),
   name: z.string().describe("Human-readable name for the prompt"),
-  description: z.string().optional().describe("Description of what the prompt does"),
+  description: z
+    .string()
+    .optional()
+    .describe("Description of what the prompt does"),
   systemPrompt: z
     .string()
     .optional()
@@ -317,7 +331,9 @@ const CreatePromptInputSchema = z.object({
 });
 
 const UpdatePromptInputSchema = z.object({
-  key: z.string().describe("The unique key identifier for the prompt to update"),
+  key: z
+    .string()
+    .describe("The unique key identifier for the prompt to update"),
   name: z.string().optional().describe("New name for the prompt"),
   description: z.string().optional().describe("New description"),
   purpose: z.string().optional().describe("The purpose/goal of this prompt"),
@@ -347,7 +363,9 @@ const CreateVersionInputSchema = z.object({
 });
 
 const DeletePromptInputSchema = z.object({
-  key: z.string().describe("The unique key identifier for the prompt to delete"),
+  key: z
+    .string()
+    .describe("The unique key identifier for the prompt to delete"),
 });
 
 // Setup operation schemas
@@ -366,8 +384,13 @@ const SetupProjectInputSchema = z.object({
 });
 
 const GenerateConfigInputSchema = z.object({
-  projectPath: z.string().describe("Absolute path to the project root directory"),
-  apiKey: z.string().optional().describe("API key (will prompt user if not provided)"),
+  projectPath: z
+    .string()
+    .describe("Absolute path to the project root directory"),
+  apiKey: z
+    .string()
+    .optional()
+    .describe("API key (will prompt user if not provided)"),
   baseUrl: z.string().optional().describe("Custom API base URL (optional)"),
 });
 
@@ -385,12 +408,22 @@ const GenerateExampleInputSchema = z.object({
 });
 
 const DetectProjectInputSchema = z.object({
-  projectPath: z.string().describe("Absolute path to the project root directory"),
+  projectPath: z
+    .string()
+    .describe("Absolute path to the project root directory"),
 });
 
 const GetIntegrationGuideInputSchema = z.object({
   framework: z
-    .enum(["nextjs", "react", "express", "fastapi", "django", "flask", "generic"])
+    .enum([
+      "nextjs",
+      "react",
+      "express",
+      "fastapi",
+      "django",
+      "flask",
+      "generic",
+    ])
     .describe("Framework to get integration guide for"),
   language: z
     .enum(["typescript", "javascript", "python"])
@@ -404,7 +437,7 @@ const GetIntegrationGuideInputSchema = z.object({
 export function registerTools(
   server: McpServer,
   client: ForPrompt,
-  config: ForPromptMcpServerConfig
+  config: ForPromptMcpServerConfig,
 ): void {
   // Tool: Get a single prompt by key
   server.registerTool(
@@ -438,7 +471,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: List all prompts
@@ -460,7 +493,7 @@ export function registerTools(
             (p) =>
               p.key.toLowerCase().includes(searchLower) ||
               p.name.toLowerCase().includes(searchLower) ||
-              p.description?.toLowerCase().includes(searchLower)
+              p.description?.toLowerCase().includes(searchLower),
           );
         }
 
@@ -503,7 +536,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Search prompts
@@ -530,7 +563,7 @@ export function registerTools(
             p.systemPrompt,
           ];
           return searchFields.some(
-            (field) => field && field.toLowerCase().includes(queryLower)
+            (field) => field && field.toLowerCase().includes(queryLower),
           );
         });
 
@@ -574,7 +607,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Get prompt metadata only
@@ -626,7 +659,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Get raw system prompt only
@@ -661,7 +694,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // ==================== WRITE OPERATIONS ====================
@@ -709,7 +742,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Update a prompt
@@ -745,7 +778,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Create a new version
@@ -786,7 +819,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Delete a prompt
@@ -822,7 +855,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // ==================== SETUP & INTEGRATION TOOLS ====================
@@ -851,17 +884,25 @@ export function registerTools(
         // Check for package.json (Node.js/TypeScript/JavaScript)
         const packageJsonPath = path.join(projectPath, "package.json");
         if (fs.existsSync(packageJsonPath)) {
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+          const packageJson = JSON.parse(
+            fs.readFileSync(packageJsonPath, "utf-8"),
+          );
 
           // Detect language
-          if (packageJson.devDependencies?.typescript || packageJson.dependencies?.typescript) {
+          if (
+            packageJson.devDependencies?.typescript ||
+            packageJson.dependencies?.typescript
+          ) {
             detection.language = "typescript";
           } else {
             detection.language = "javascript";
           }
 
           // Check if ForPrompt is already installed
-          if (packageJson.dependencies?.["@forprompt/sdk"] || packageJson.devDependencies?.["@forprompt/sdk"]) {
+          if (
+            packageJson.dependencies?.["@forprompt/sdk"] ||
+            packageJson.devDependencies?.["@forprompt/sdk"]
+          ) {
             detection.hasForPrompt = true;
           }
 
@@ -881,7 +922,9 @@ export function registerTools(
             detection.packageManager = "yarn";
           } else if (fs.existsSync(path.join(projectPath, "bun.lockb"))) {
             detection.packageManager = "bun";
-          } else if (fs.existsSync(path.join(projectPath, "package-lock.json"))) {
+          } else if (
+            fs.existsSync(path.join(projectPath, "package-lock.json"))
+          ) {
             detection.packageManager = "npm";
           }
 
@@ -962,11 +1005,17 @@ export function registerTools(
           lines.push(`## Next Steps`);
           lines.push(``);
           lines.push(`1. Run \`forprompt_setup_project\` to install the SDK`);
-          lines.push(`2. Run \`forprompt_generate_config\` to create the config file`);
-          lines.push(`3. Use \`forprompt_generate_example\` to see usage examples`);
+          lines.push(
+            `2. Run \`forprompt_generate_config\` to create the config file`,
+          );
+          lines.push(
+            `3. Use \`forprompt_generate_example\` to see usage examples`,
+          );
         } else {
           lines.push(`ForPrompt is already installed! You can:`);
-          lines.push(`- Use \`forprompt_list_prompts\` to see available prompts`);
+          lines.push(
+            `- Use \`forprompt_list_prompts\` to see available prompts`,
+          );
           lines.push(`- Use \`forprompt_create_prompt\` to create new prompts`);
         }
 
@@ -979,7 +1028,8 @@ export function registerTools(
           ],
         };
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown error";
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         return {
           content: [
             {
@@ -990,7 +1040,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Setup project (install SDK)
@@ -1016,10 +1066,14 @@ export function registerTools(
           const requirementsPath = path.join(projectPath, "requirements.txt");
 
           if (fs.existsSync(packageJsonPath)) {
-            const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+            const packageJson = JSON.parse(
+              fs.readFileSync(packageJsonPath, "utf-8"),
+            );
 
             if (!detectedLanguage) {
-              detectedLanguage = packageJson.devDependencies?.typescript ? "typescript" : "javascript";
+              detectedLanguage = packageJson.devDependencies?.typescript
+                ? "typescript"
+                : "javascript";
             }
 
             if (!detectedPM) {
@@ -1033,7 +1087,10 @@ export function registerTools(
                 detectedPM = "npm";
               }
             }
-          } else if (fs.existsSync(pyprojectPath) || fs.existsSync(requirementsPath)) {
+          } else if (
+            fs.existsSync(pyprojectPath) ||
+            fs.existsSync(requirementsPath)
+          ) {
             detectedLanguage = "python";
 
             if (!detectedPM) {
@@ -1128,7 +1185,8 @@ export function registerTools(
           ],
         };
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown error";
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         return {
           content: [
             {
@@ -1139,7 +1197,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Generate config file
@@ -1207,7 +1265,8 @@ export function registerTools(
           ],
         };
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown error";
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         return {
           content: [
             {
@@ -1218,7 +1277,7 @@ export function registerTools(
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Generate example code
@@ -1573,7 +1632,8 @@ main();`;
           ],
         };
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown error";
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         return {
           content: [
             {
@@ -1584,7 +1644,7 @@ main();`;
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Tool: Get integration guide
@@ -1925,7 +1985,8 @@ print(prompt.system_prompt)
           ],
         };
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Unknown error";
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         return {
           content: [
             {
@@ -1936,6 +1997,6 @@ print(prompt.system_prompt)
           isError: true,
         };
       }
-    }
+    },
   );
 }

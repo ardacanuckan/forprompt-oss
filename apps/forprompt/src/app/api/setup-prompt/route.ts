@@ -14,7 +14,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const prompt = generateSetupPrompt({
     apiKey,
     orgName: org,
-    baseUrl: "https://wooden-fox-811.convex.site",
+    baseUrl: process.env.CONVEX_SITE_URL || process.env.NEXT_PUBLIC_CONVEX_URL!,
   });
 
   return new NextResponse(prompt, {

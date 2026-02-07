@@ -264,25 +264,19 @@ export default defineSchema({
   // ============================================================================
 
   // Organization subscriptions - stores subscription tier per organization
+  // OSS: All organizations get enterprise tier by default
   organizationSubscriptions: defineTable({
     orgId: v.id("organizations"),
-    tier: v.string(), // "free" | "pro" | "enterprise"
-    // Polar fields
-    polarCustomerId: v.optional(v.string()),
-    polarSubscriptionId: v.optional(v.string()),
-    productId: v.optional(v.string()), // Polar product identifier
+    tier: v.string(), // Always "enterprise" in OSS
     // Billing period
     periodStart: v.number(),
-    periodEnd: v.optional(v.number()), // null for free tier
-    status: v.string(), // "active" | "cancelled" | "past_due" | "expired"
+    periodEnd: v.optional(v.number()),
+    status: v.string(), // "active"
     cancelAtPeriodEnd: v.boolean(),
     // Timestamps
     createdAt: v.number(),
     updatedAt: v.number(),
-  })
-    .index("by_org", ["orgId"])
-    .index("by_polar_subscription", ["polarSubscriptionId"])
-    .index("by_polar_customer", ["polarCustomerId"]),
+  }).index("by_org", ["orgId"]),
 
   // Organization usage tracking - aggregated per billing period
   organizationUsage: defineTable({

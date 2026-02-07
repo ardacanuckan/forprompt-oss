@@ -18,10 +18,6 @@ export const env = createEnv({
     // Health check optional environment variables
     APP_VERSION: z.string().default("0.0.0"),
     REDIS_URL: z.string().url().optional(),
-    // Polar payment environment variables (server-side)
-    POLAR_ACCESS_TOKEN: z.string().optional(),
-    POLAR_SUCCESS_URL: z.string().url().optional(),
-    POLAR_ENVIRONMENT: z.enum(["sandbox", "production"]).default("sandbox"),
   },
 
   /**
@@ -31,9 +27,6 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_CONVEX_URL: z.string().url(),
-    // Polar product IDs (public) - monthly only
-    NEXT_PUBLIC_POLAR_PRO_PRODUCT_ID: z.string().optional(),
-    NEXT_PUBLIC_POLAR_ENTERPRISE_PRODUCT_ID: z.string().optional(),
     // Analytics
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url().optional(),
@@ -46,10 +39,6 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
-    NEXT_PUBLIC_POLAR_PRO_PRODUCT_ID:
-      process.env.NEXT_PUBLIC_POLAR_PRO_PRODUCT_ID,
-    NEXT_PUBLIC_POLAR_ENTERPRISE_PRODUCT_ID:
-      process.env.NEXT_PUBLIC_POLAR_ENTERPRISE_PRODUCT_ID,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },

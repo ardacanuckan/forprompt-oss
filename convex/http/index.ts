@@ -7,7 +7,6 @@ import { httpRouter } from "convex/server";
 import { deploy, validateApiKey } from "./routes/cliAuth";
 import { editPromptStream } from "./routes/editPromptStream";
 import { getLog, getLogs, logSpan } from "./routes/logs";
-import { handlePolarWebhook } from "./routes/polarWebhook";
 import { getPromptByKey } from "./routes/prompts";
 import {
   createPrompt,
@@ -100,13 +99,6 @@ http.route({
   path: "/clerk-webhook",
   method: "POST",
   handler: handleClerkWebhook,
-});
-
-// Polar webhook routes
-http.route({
-  path: "/polar-webhook",
-  method: "POST",
-  handler: handlePolarWebhook,
 });
 
 // CLI routes

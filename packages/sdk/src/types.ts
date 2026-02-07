@@ -5,8 +5,8 @@
 export interface ForPromptConfig {
   /** API key from ForPrompt dashboard (required) */
   apiKey: string;
-  /** Custom base URL (optional, defaults to https://wooden-fox-811.convex.site) */
-  baseUrl?: string;
+  /** Base URL for API (required - set FORPROMPT_BASE_URL env var) */
+  baseUrl: string;
 }
 
 export interface Prompt {
@@ -66,7 +66,7 @@ export class ForPromptError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public code: string
+    public code: string,
   ) {
     super(message);
     this.name = "ForPromptError";

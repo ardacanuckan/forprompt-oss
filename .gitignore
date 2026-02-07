@@ -58,7 +58,11 @@ dist/
 convex/*.js
 convex/*.js.map
 convex/out/
+convex/_generated/
 .convex/
+
+# forprompt sdk local config
+.forpromptrc
 
 # docker
 docker-compose.override.yml
