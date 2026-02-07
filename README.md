@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/logo.png" alt="ForPrompt Logo" width="120" height="120">
+
 # ForPrompt
 
 ### GitHub for AI Prompts
