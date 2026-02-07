@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: forprompt-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-forprompt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-forprompt}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-forprompt} -d ${POSTGRES_DB:-forprompt}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ForPrompt Web Application
+  forprompt:
+    build:
+      context: .
+      dockerfile: apps/forprompt/Dockerfile
+    container_name: forprompt-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Database
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-forprompt}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-forprompt}
+      - DATA_PROVIDER=postgresql
+      # Clerk Authentication
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:?NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is required}
+      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY:?CLERK_SECRET_KEY is required}
+      # AI Features (optional)
+      - AI_PROVIDER=${AI_PROVIDER:-openrouter}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.1}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Ollama for local AI (uncomment to enable)
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: forprompt-ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   restart: unless-stopped
+  #   # After starting, run: docker exec forprompt-ollama ollama pull llama3.1
+
+volumes:
+  postgres_data:
+  # ollama_data:

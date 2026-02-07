@@ -333,14 +333,16 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ### Tech Stack
 
-| Layer        | Technology                                         |
-| ------------ | -------------------------------------------------- |
-| **Frontend** | Next.js 15, React 19, Tailwind CSS v4, shadcn/ui   |
-| **Backend**  | Convex (serverless functions + real-time database) |
-| **Auth**     | Clerk (users, organizations, multi-tenancy)        |
-| **AI**       | OpenRouter API (Claude, GPT-4, etc.)               |
-| **SDKs**     | TypeScript, Python                                 |
-| **Monorepo** | Turborepo + pnpm workspaces                        |
+| Layer        | Technology                                       |
+| ------------ | ------------------------------------------------ |
+| **Frontend** | Next.js 15, React 19, Tailwind CSS v4, shadcn/ui |
+| **Backend**  | Convex OR PostgreSQL + Drizzle ORM               |
+| **Auth**     | Clerk (users, organizations, multi-tenancy)      |
+| **AI**       | OpenRouter, OpenAI, Anthropic, or Ollama (local) |
+| **SDKs**     | TypeScript, Python                               |
+| **Monorepo** | Turborepo + pnpm workspaces                      |
+
+> **Self-Hosting Options**: Use Convex for managed backend, or PostgreSQL for full self-hosted deployments. See [SELF_HOSTING.md](SELF_HOSTING.md) for details.
 
 ### Project Structure
 
@@ -361,6 +363,9 @@ forprompt-oss/
 │   │   ├── trace.ts            # Logging utilities
 │   │   └── mcp/                # MCP server
 │   ├── sdk-python/             # Python SDK
+│   ├── providers/              # Backend abstraction layer
+│   │   ├── src/ai/             # AI providers (OpenRouter, OpenAI, Anthropic, Ollama)
+│   │   └── src/data/drizzle/   # PostgreSQL schema & migrations
 │   ├── ui/                     # Shared components
 │   └── validators/             # Zod schemas
 ├── convex/                     # Backend
@@ -403,14 +408,17 @@ ForPrompt uses 29 tables organized by domain:
 
 ### Environment Variables
 
-| Variable                            | Required | Description             |
-| ----------------------------------- | -------- | ----------------------- |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes      | Clerk public key        |
-| `CLERK_SECRET_KEY`                  | Yes      | Clerk secret key        |
-| `CLERK_WEBHOOK_SECRET`              | Yes      | Clerk webhook signing   |
-| `NEXT_PUBLIC_CONVEX_URL`            | Yes      | Convex deployment URL   |
-| `CONVEX_DEPLOYMENT`                 | Yes      | Convex deployment name  |
-| `OPENROUTER_API_KEY`                | No       | For AI-powered features |
+| Variable                            | Required        | Description                                      |
+| ----------------------------------- | --------------- | ------------------------------------------------ |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes             | Clerk public key                                 |
+| `CLERK_SECRET_KEY`                  | Yes             | Clerk secret key                                 |
+| `CLERK_WEBHOOK_SECRET`              | Yes             | Clerk webhook signing                            |
+| `NEXT_PUBLIC_CONVEX_URL`            | Convex mode     | Convex deployment URL                            |
+| `CONVEX_DEPLOYMENT`                 | Convex mode     | Convex deployment name                           |
+| `DATABASE_URL`                      | PostgreSQL mode | PostgreSQL connection string                     |
+| `AI_PROVIDER`                       | No              | `openrouter`, `openai`, `anthropic`, or `ollama` |
+| `OPENROUTER_API_KEY`                | No              | OpenRouter API key                               |
+| `OLLAMA_BASE_URL`                   | No              | Ollama server URL (for local AI)                 |
 
 ---
 
@@ -419,7 +427,11 @@ ForPrompt uses 29 tables organized by domain:
 ### Docker
 
 ```bash
+# Convex mode (managed backend)
 docker compose up -d
+
+# PostgreSQL mode (full self-hosted)
+docker compose -f docker-compose.postgres.yml up -d
 ```
 
 ### Vercel
