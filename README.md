@@ -289,6 +289,6 @@ Built with amazing open source tools:
 
 **[Documentation](SELF_HOSTING.md)** · **[Report Bug](https://github.com/ardacanuckan/forprompt-oss/issues)** · **[Request Feature](https://github.com/ardacanuckan/forprompt-oss/issues)**
 
-Made with love by [Arda Can Uckan](https://github.com/ardacanuckan)
+Made with love by [Arda Uckan](https://github.com/ardacanuckan)
 
 </div>
