@@ -30,7 +30,7 @@
     "@turbo/gen": "^2.5.8",
     "@types/node": "catalog:",
     "convex": "^1.31.2",
-    "dotenv-cli": "^10.0.0",
+    "dotenv-cli": "^11.0.0",
     "prettier": "catalog:",
     "svix": "^1.82.0",
     "turbo": "^2.5.8",

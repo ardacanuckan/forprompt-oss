@@ -21,7 +21,7 @@
     "@tanstack/react-form": "catalog:",
     "convex": "^1.31.2",
     "diff": "^8.0.2",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "^0.563.0",
     "next": "^16.0.9",
     "posthog-js": "^1.333.0",
     "react": "catalog:react19",
