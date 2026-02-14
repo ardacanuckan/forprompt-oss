@@ -21,13 +21,13 @@
     "@tanstack/react-form": "catalog:",
     "convex": "^1.31.2",
     "diff": "^8.0.2",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "^0.564.0",
     "next": "^16.0.9",
-    "posthog-js": "^1.333.0",
+    "posthog-js": "^1.347.2",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-syntax-highlighter": "^16.1.0",
-    "shaders": "^2.2.45",
+    "shaders": "^2.3.61",
     "zod": "catalog:"
   },
   "devDependencies": {
