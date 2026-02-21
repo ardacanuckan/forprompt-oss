@@ -13,7 +13,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.36.5",
+    "@clerk/nextjs": "^6.38.1",
     "@forprompt/providers": "workspace:*",
     "@forprompt/ui": "workspace:*",
     "@forprompt/validators": "workspace:*",
