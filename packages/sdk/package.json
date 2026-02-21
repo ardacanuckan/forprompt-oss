@@ -63,16 +63,16 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "zod": "^3.24.0"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@forprompt/eslint-config": "workspace:*",
     "@forprompt/tsconfig": "workspace:*",
-    "@types/node": "^20.0.0",
-    "@vitest/coverage-v8": "^2.1.0",
-    "eslint": "^9.0.0",
+    "@types/node": "^25.3.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.1",
     "tsup": "^8.0.0",
     "typescript": "^5.3.0",
-    "vitest": "^2.1.0"
+    "vitest": "^4.0.18"
   }
 }
