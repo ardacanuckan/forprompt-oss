@@ -27,13 +27,13 @@
   },
   "devDependencies": {
     "@forprompt/prettier-config": "workspace:*",
-    "@turbo/gen": "^2.5.8",
+    "@turbo/gen": "^2.8.12",
     "@types/node": "catalog:",
     "convex": "^1.31.2",
-    "dotenv-cli": "^10.0.0",
+    "dotenv-cli": "^11.0.0",
     "prettier": "catalog:",
-    "svix": "^1.82.0",
-    "turbo": "^2.5.8",
+    "svix": "^1.86.0",
+    "turbo": "^2.8.12",
     "typescript": "catalog:"
   },
   "prettier": "@forprompt/prettier-config"
